@@ -1,0 +1,45 @@
+#eureka:
+#  instance:
+#    instance-id: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
+#  client:
+#    service-url:
+#      defaultZone: http://localhost:8761/eureka/
+
+
+
+spring:
+  application:
+    name: resource-server
+
+server:
+  port: 8767
+
+
+#
+#security:
+#  oauth2:
+#    resource:
+#      user-info-uri: http://localhost:8766/oauth/user
+#      prefer-token-info: false
+
+#security:
+#  oauth2:
+#    client:
+#      client-id: admin
+#      client-secret: 123456
+#    resource:
+#      token-info-uri: http://localhost:8766/oauth/check_token
+#      userInfoUri: http://localhost:8766/oauth/user
+
+#security:
+#  oauth2:
+#    client:
+#      client-id: admin
+#      client-secret: 123456
+#      user-authorization-uri: http://localhost:8766/oauth/authorize
+#      access-token-uri: http://localhost:8766/oauth/token
+#    resource:
+#      id: zhangwei
+#      userInfoUri: http://localhost:8766/oauth/user
+#    authorization:
+#      check-token-access: http://localhost:8766/oauth/check_token
