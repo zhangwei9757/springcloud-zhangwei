@@ -7,7 +7,7 @@
         <artifactId>springcloud-zhangwei</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>springcloud-elasticsearch-zhangwei</artifactId>
+    <artifactId>springcloud-elasticsearch5_6_8-zhangwei</artifactId>
     <name>springcloud-elasticsearch</name>
     <description>Demo project for Spring Boot</description>
 
@@ -16,14 +16,17 @@
     </properties>
 
     <dependencies>
+        <!-- 默认<elasticsearch>5.5.0</elasticsearch> -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-elasticsearch</artifactId>
         </dependency>
 
+        <!-- spring-boot-starter-data-elasticsearch 里已排除在这里，需要引入transport-netty3-client，匹配版本-->
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
+            <groupId>org.elasticsearch.plugin</groupId>
+            <artifactId>transport-netty3-client</artifactId>
+            <version>5.6.8</version>
         </dependency>
 
         <dependency>
