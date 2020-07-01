@@ -30,26 +30,26 @@ public class EsReportObstacle extends Model<EsReportObstacle> {
     /**
      * 单号
      */
-    @TableField("troubleNo")
-    private Integer troubleNo;
+    @TableField("obstacleNo")
+    private Integer obstacleNo;
 
     /**
      * 问题标题
      */
-    @TableField("problemTitle")
-    private String problemTitle;
+    @TableField("obstacleTitle")
+    private String obstacleTitle;
 
     /**
      * 问题描述
      */
-    @TableField("problemDesc")
-    private String problemDesc;
+    @TableField("obstacleDesc")
+    private String obstacleDesc;
 
     /**
      * 生成单时间
      */
-    @TableField("troubleTime")
-    private Integer troubleTime;
+    @TableField("obstacleTime")
+    private Integer obstacleTime;
 
     /**
      * 系统名

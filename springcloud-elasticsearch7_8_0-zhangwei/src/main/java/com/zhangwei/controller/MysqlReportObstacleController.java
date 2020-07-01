@@ -1,5 +1,7 @@
 package com.zhangwei.controller;
 
+import com.zhangwei.entity.EsReportObstacle;
+import com.zhangwei.mapper.EsReportObstacleMapper;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
@@ -14,8 +16,12 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
+import javax.annotation.Resource;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -32,6 +38,9 @@ public class MysqlReportObstacleController {
 
     @Autowired
     private RestHighLevelClient restHighLevelClient;
+
+    @Resource
+    private EsReportObstacleMapper esReportObstacleMapper;
 
     /**
      * 从ES同步全量数据到数据库
@@ -50,13 +59,14 @@ public class MysqlReportObstacleController {
             return "索引名不能为空";
         }
         long syncSize = 0;
+        TimeValue timeValue = TimeValue.timeValueSeconds(300);
         SearchRequest searchRequest = new SearchRequest(indexName);
-        searchRequest.scroll(TimeValue.timeValueSeconds(60));
+        searchRequest.scroll(timeValue);
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
-        searchSourceBuilder.timeout(TimeValue.timeValueSeconds(60));
-        searchSourceBuilder.size(10000);
-        searchSourceBuilder.sort("troubleTime", SortOrder.DESC);
+        searchSourceBuilder.timeout(timeValue);
+        searchSourceBuilder.size(500);
+        searchSourceBuilder.sort("obstacleTime", SortOrder.DESC);
 
         searchRequest.source(searchSourceBuilder);
         SearchResponse search = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
@@ -68,12 +78,14 @@ public class MysqlReportObstacleController {
 
         SearchHit[] hits = search.getHits().getHits();
         List<Map<String, Object>> collect = Arrays.stream(hits).map(SearchHit::getSourceAsMap).collect(Collectors.toList());
-        // TODO 同步数据第一次
+
         syncSize += collect.size();
+        List<EsReportObstacle> esReportObstacles = this.dto2Entity(collect);
+        esReportObstacles.parallelStream().forEach(esReportObstacleMapper::insert);
 
         while (true) {
             SearchScrollRequest scrollRequest = new SearchScrollRequest(temp);
-            scrollRequest.scroll(TimeValue.timeValueSeconds(60));
+            scrollRequest.scroll(timeValue);
 
             SearchResponse scroll = restHighLevelClient.scroll(scrollRequest, RequestOptions.DEFAULT);
             SearchHit[] hits1 = scroll.getHits().getHits();
@@ -81,8 +93,10 @@ public class MysqlReportObstacleController {
                 break;
             }
             List<Map<String, Object>> collect1 = Arrays.stream(hits1).map(SearchHit::getSourceAsMap).collect(Collectors.toList());
-            // TODO 循环时同步数据第N次
+
             syncSize += collect1.size();
+            List<EsReportObstacle> reportObstacles = this.dto2Entity(collect);
+            reportObstacles.parallelStream().forEach(esReportObstacleMapper::insert);
 
             String scrollId1 = scroll.getScrollId();
             if (!Objects.deepEquals(scrollId1, temp)) {
@@ -96,5 +110,26 @@ public class MysqlReportObstacleController {
         ClearScrollResponse clearScrollResponse = restHighLevelClient.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
         boolean succeeded = clearScrollResponse.isSucceeded();
         return succeeded ? String.format("%s 条数据, 同步成功", syncSize) : "同步失败";
+    }
+
+    private List<EsReportObstacle> dto2Entity(List<Map<String, Object>> collect) {
+        List<EsReportObstacle> list = new ArrayList<>(collect.size());
+        collect.forEach(f -> {
+            String moduleName = (String) f.getOrDefault("moduleName", "");
+            String problemDesc = (String) f.getOrDefault("obstacleDesc", "");
+            String problemTitle = (String) f.getOrDefault("obstacleTitle", "");
+            String systemName = (String) f.getOrDefault("systemName", "");
+            long currentTimeMillis = System.currentTimeMillis();
+            Integer of = Integer.valueOf(String.valueOf(currentTimeMillis));
+            EsReportObstacle esReportObstacle = new EsReportObstacle();
+            esReportObstacle.setModuleName(moduleName);
+            esReportObstacle.setObstacleDesc(problemDesc);
+            esReportObstacle.setObstacleTitle(problemTitle);
+            esReportObstacle.setSystemName(systemName);
+            esReportObstacle.setObstacleNo(of);
+            esReportObstacle.setObstacleTime(of);
+            list.add(esReportObstacle);
+        });
+        return list;
     }
 }

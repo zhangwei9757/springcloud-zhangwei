@@ -26,22 +26,22 @@ public class ReportObstacleDto {
      * 单号
      */
     @Field(type = FieldType.Long, store = true, analyzer = Defs.ES_ANALYSIS_TYPE, searchAnalyzer = Defs.ES_ANALYSIS_TYPE)
-    private Long troubleNo;
+    private Long obstacleNo;
     /**
      * 问题标题
      */
     @Field(type = FieldType.Text, store = true, analyzer = Defs.ES_ANALYSIS_TYPE, searchAnalyzer = Defs.ES_ANALYSIS_TYPE)
-    private String problemTitle;
+    private String obstacleTitle;
     /**
      * 问题描述
      */
     @Field(type = FieldType.Text, store = true, analyzer = Defs.ES_ANALYSIS_TYPE, searchAnalyzer = Defs.ES_ANALYSIS_TYPE)
-    private String problemDesc;
+    private String obstacleDesc;
     /**
      * 生成单时间
      */
     @Field(type = FieldType.Long, store = true, analyzer = Defs.ES_ANALYSIS_TYPE, searchAnalyzer = Defs.ES_ANALYSIS_TYPE)
-    private Long troubleTime;
+    private Long obstacleTime;
     /**
      * 系统名
      */

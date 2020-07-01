@@ -353,11 +353,11 @@ public class ElasticsearchReportObstacleController {
         for (int i = startIndex; i < endIndex; i++, count++) {
             ReportObstacleDto reportObstacle = new ReportObstacleDto();
             reportObstacle.setId(System.currentTimeMillis());
-            reportObstacle.setTroubleNo(System.currentTimeMillis());
+            reportObstacle.setObstacleNo(System.currentTimeMillis());
             int between = RandomUtils.getBetween(0, size);
-            reportObstacle.setProblemTitle(UUID.randomUUID().toString() + contents.substring(between, between + 4));
-            reportObstacle.setProblemDesc(contents.substring(between, between + 4));
-            reportObstacle.setTroubleTime(System.currentTimeMillis());
+            reportObstacle.setObstacleTitle(UUID.randomUUID().toString() + contents.substring(between, between + 4));
+            reportObstacle.setObstacleDesc(contents.substring(between, between + 4));
+            reportObstacle.setObstacleTime(System.currentTimeMillis());
             between = between < 4 ? 4 : between;
             reportObstacle.setSystemName(contents.substring(between - 4, between));
             between = between >= size ? size - 2 : between;

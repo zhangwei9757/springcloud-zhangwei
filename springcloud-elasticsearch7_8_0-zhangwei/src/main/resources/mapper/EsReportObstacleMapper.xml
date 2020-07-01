@@ -5,10 +5,10 @@
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="com.zhangwei.entity.EsReportObstacle">
     <result column="id" property="id" />
-        <result column="troubleNo" property="troubleNo" />
-        <result column="problemTitle" property="problemTitle" />
-        <result column="problemDesc" property="problemDesc" />
-        <result column="troubleTime" property="troubleTime" />
+        <result column="obstacleNo" property="obstacleNo" />
+        <result column="obstacleTitle" property="obstacleTitle" />
+        <result column="obstacleDesc" property="obstacleDesc" />
+        <result column="obstacleTime" property="obstacleTime" />
         <result column="systemName" property="systemName" />
         <result column="moduleName" property="moduleName" />
     </resultMap>
