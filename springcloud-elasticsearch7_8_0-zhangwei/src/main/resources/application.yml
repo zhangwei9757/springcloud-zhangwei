@@ -56,7 +56,7 @@ mybatis-plus:
   global-config:
     db-config:
       id-type: auto
-      capital-mode: true
+      capital-mode: false
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mapper/**/*.xml

@@ -13,4 +13,7 @@
         <result column="moduleName" property="moduleName" />
     </resultMap>
 
+    <update id="truncateTable">
+        truncate table es_report_obstacle
+    </update>
 </mapper>

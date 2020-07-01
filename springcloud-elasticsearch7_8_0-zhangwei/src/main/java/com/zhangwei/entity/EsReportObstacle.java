@@ -31,7 +31,7 @@ public class EsReportObstacle extends Model<EsReportObstacle> {
      * 单号
      */
     @TableField("obstacleNo")
-    private Integer obstacleNo;
+    private Long obstacleNo;
 
     /**
      * 问题标题
@@ -49,7 +49,7 @@ public class EsReportObstacle extends Model<EsReportObstacle> {
      * 生成单时间
      */
     @TableField("obstacleTime")
-    private Integer obstacleTime;
+    private Long obstacleTime;
 
     /**
      * 系统名

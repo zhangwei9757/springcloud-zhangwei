@@ -112,6 +112,25 @@ public class MysqlReportObstacleController {
         return succeeded ? String.format("%s 条数据, 同步成功", syncSize) : "同步失败";
     }
 
+    /**
+     * 清空MYSQL数据库
+     *
+     * @return
+     * @throws Exception
+     */
+    @PostMapping(value = "/clearDataBase")
+    @ApiOperation(value = "清空MYSQL数据库", tags = "MYSQL搜索")
+    public Object clearDataBase() throws Exception {
+        Integer integer = esReportObstacleMapper.truncateTable();
+        return integer;
+    }
+
+    /**
+     * ES 数据转 Entity
+     *
+     * @param collect
+     * @return
+     */
     private List<EsReportObstacle> dto2Entity(List<Map<String, Object>> collect) {
         List<EsReportObstacle> list = new ArrayList<>(collect.size());
         collect.forEach(f -> {
@@ -120,14 +139,13 @@ public class MysqlReportObstacleController {
             String problemTitle = (String) f.getOrDefault("obstacleTitle", "");
             String systemName = (String) f.getOrDefault("systemName", "");
             long currentTimeMillis = System.currentTimeMillis();
-            Integer of = Integer.valueOf(String.valueOf(currentTimeMillis));
             EsReportObstacle esReportObstacle = new EsReportObstacle();
             esReportObstacle.setModuleName(moduleName);
             esReportObstacle.setObstacleDesc(problemDesc);
             esReportObstacle.setObstacleTitle(problemTitle);
             esReportObstacle.setSystemName(systemName);
-            esReportObstacle.setObstacleNo(of);
-            esReportObstacle.setObstacleTime(of);
+            esReportObstacle.setObstacleNo(currentTimeMillis);
+            esReportObstacle.setObstacleTime(currentTimeMillis);
             list.add(esReportObstacle);
         });
         return list;

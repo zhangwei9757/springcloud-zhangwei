@@ -13,4 +13,5 @@ import com.baomidou.mybatisplus.extension.service.IService;
  */
 public interface IEsReportObstacleService extends IService<EsReportObstacle> {
 
+    Integer truncateTable();
 }
