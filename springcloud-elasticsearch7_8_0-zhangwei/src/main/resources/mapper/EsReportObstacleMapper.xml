@@ -16,4 +16,17 @@
     <update id="truncateTable">
         truncate table es_report_obstacle
     </update>
+
+    <insert id="insertBatch" parameterType="list">
+        INSERT INTO `es_report_obstacle` VALUES
+        <foreach collection="list" item="item" separator=",">
+            (null,
+            #{item.obstacleNo},
+            #{item.obstacleTitle},
+            #{item.obstacleDesc},
+            #{item.obstacleTime},
+            #{item.systemName},
+            #{item.moduleName})
+        </foreach>
+    </insert>
 </mapper>

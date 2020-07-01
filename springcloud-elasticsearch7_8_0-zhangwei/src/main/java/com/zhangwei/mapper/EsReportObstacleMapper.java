@@ -3,6 +3,8 @@ package com.zhangwei.mapper;
 import com.zhangwei.entity.EsReportObstacle;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 
+import java.util.List;
+
 /**
  * <p>
  *  Mapper 接口
@@ -14,4 +16,6 @@ import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 public interface EsReportObstacleMapper extends BaseMapper<EsReportObstacle> {
 
     Integer truncateTable();
+
+    Integer insertBatch(List<EsReportObstacle> list);
 }

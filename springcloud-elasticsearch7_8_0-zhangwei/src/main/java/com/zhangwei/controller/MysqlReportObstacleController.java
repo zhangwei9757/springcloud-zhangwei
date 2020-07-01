@@ -19,6 +19,8 @@ import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.search.builder.SearchSourceBuilder;
 import org.elasticsearch.search.sort.SortOrder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -26,6 +28,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executor;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -45,6 +49,9 @@ public class MysqlReportObstacleController {
 
     @Resource
     private EsReportObstacleMapper esReportObstacleMapper;
+
+    @Autowired
+    private Executor executor;
 
     /**
      * 从ES同步全量数据到数据库
@@ -85,7 +92,7 @@ public class MysqlReportObstacleController {
 
         syncSize += collect.size();
         List<EsReportObstacle> esReportObstacles = this.dto2Entity(collect);
-        esReportObstacles.parallelStream().forEach(esReportObstacleMapper::insert);
+        this.batchSave(esReportObstacles, 512);
 
         while (true) {
             SearchScrollRequest scrollRequest = new SearchScrollRequest(temp);
@@ -100,7 +107,7 @@ public class MysqlReportObstacleController {
 
             syncSize += collect1.size();
             List<EsReportObstacle> reportObstacles = this.dto2Entity(collect);
-            reportObstacles.parallelStream().forEach(esReportObstacleMapper::insert);
+            this.batchSave(reportObstacles, 512);
 
             String scrollId1 = scroll.getScrollId();
             if (!Objects.deepEquals(scrollId1, temp)) {
@@ -159,10 +166,12 @@ public class MysqlReportObstacleController {
     @ApiOperation(value = "查询数据", tags = "MYSQL搜索")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "queryField", value = "查询字段", required = false, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "queryContent", value = "查询内容", required = false, dataType = "String", paramType = "query")
+            @ApiImplicitParam(name = "queryContent", value = "查询内容", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "readOnlyCount", value = "只显示数量", required = true, dataType = "boolean", paramType = "query")
     })
     public Object findField(@RequestParam(value = "queryField", required = false) String queryField,
-                            @RequestParam(value = "queryContent", required = false) String queryContent) throws Exception {
+                            @RequestParam(value = "queryContent", required = false) String queryContent,
+                            @RequestParam(value = "readOnlyCount", required = false) boolean readOnlyCount) throws Exception {
         if (StringUtils.isBlank(queryField)) {
             return "查询字段不能为空";
         }
@@ -176,7 +185,7 @@ public class MysqlReportObstacleController {
         List<EsReportObstacle> reportObstacles = esReportObstacleMapper.selectList(queryWrapper);
         long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
         stopwatch.stop();
-        return ResponseDto.success(reportObstacles, elapsed);
+        return readOnlyCount ? ResponseDto.success(reportObstacles.size(), elapsed) : ResponseDto.success(reportObstacles, elapsed);
     }
 
     /**
@@ -203,5 +212,36 @@ public class MysqlReportObstacleController {
             list.add(esReportObstacle);
         });
         return list;
+    }
+
+    /**
+     * @param collect
+     * @param dealSize 每个线程处理的数量
+     * @return
+     */
+    @Transactional(rollbackFor = Exception.class)
+    public void batchSave(List<EsReportObstacle> collect, int dealSize) throws Exception {
+        if (CollectionUtils.isEmpty(collect)) {
+            return;
+        }
+
+        int count = collect.size() / dealSize;
+        int surplus = collect.size() % dealSize;
+        if (surplus > 0) {
+            count += 1;
+        }
+        CountDownLatch countDownLatch = new CountDownLatch(count);
+        for (int i = 0; i < count; i++) {
+            int temp = i;
+            executor.execute(() -> {
+                int endNum = (temp + 1) * dealSize - 1;
+                if (endNum >= collect.size()) {
+                    endNum = collect.size() - 1;
+                }
+                esReportObstacleMapper.insertBatch(collect.subList(temp * dealSize, endNum));
+                countDownLatch.countDown();
+            });
+        }
+        countDownLatch.await();
     }
 }

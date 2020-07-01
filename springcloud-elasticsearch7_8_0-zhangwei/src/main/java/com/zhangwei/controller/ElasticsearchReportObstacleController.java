@@ -25,6 +25,7 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.unit.TimeValue;
 import org.elasticsearch.common.xcontent.XContentType;
 import org.elasticsearch.index.query.MatchAllQueryBuilder;
+import org.elasticsearch.index.query.MatchPhraseQueryBuilder;
 import org.elasticsearch.index.query.MatchQueryBuilder;
 import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.reindex.BulkByScrollResponse;
@@ -155,11 +156,13 @@ public class ElasticsearchReportObstacleController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "indexName", value = "索引名", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "contents", value = "文档内容", required = true, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "distCount", value = "文档数量", required = true, dataType = "int", paramType = "query")
+            @ApiImplicitParam(name = "start_num", value = "开始值", required = true, dataType = "int", paramType = "query"),
+            @ApiImplicitParam(name = "end_num", value = "结束值", required = true, dataType = "int", paramType = "query")
     })
     public String addDocumnet(@RequestParam("indexName") String indexName,
                               @RequestParam("contents") String contents,
-                              @RequestParam("distCount") int distCount) throws Exception {
+                              @RequestParam("start_num") int start_num,
+                              @RequestParam("end_num") int end_num) throws Exception {
         if (StringUtils.isBlank(indexName)) {
             return "索引名不能为空";
         }
@@ -168,25 +171,30 @@ public class ElasticsearchReportObstacleController {
             return "内容不能为空";
         }
 
-        if (distCount <= 0) {
+        if (start_num <= 0 || end_num <= 0 || end_num - start_num <= 0) {
             return "生成数据不能小于0";
         }
 
         long start = System.currentTimeMillis();
-        int dist = distCount;
+        int dist = end_num - start_num + 1;
         int pageSize = dist >= 10000 ? 10000 : dist;
-        int current;
+        int current = start_num;
 
-        for (current = 0; current < dist; ) {
-            boolean esLoadData = this.esLoadData(current, current + pageSize, contents, indexName);
+        while (true){
+            int temp = current + pageSize;
+            boolean esLoadData = this.esLoadData(current, temp, contents, indexName);
+
+            current = temp;
             if (!esLoadData) {
                 return "添加失败";
             }
+            if (current >= end_num) {
+                break;
+            }
 
-            if (dist - current >= pageSize) {
-                current += pageSize;
-            } else {
-                current += dist - current;
+            int diff = end_num - temp;
+            if (diff < pageSize) {
+                pageSize = diff;
             }
         }
 
@@ -206,11 +214,13 @@ public class ElasticsearchReportObstacleController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "indexName", value = "索引名", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "queryField", value = "查询字段", required = false, dataType = "String", paramType = "query"),
-            @ApiImplicitParam(name = "queryContent", value = "查询内容", required = false, dataType = "String", paramType = "query")
+            @ApiImplicitParam(name = "queryContent", value = "查询内容", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "readOnlyCount", value = "只显示数量", required = true, dataType = "boolean", paramType = "query")
     })
     public Object getDocument(@RequestParam("indexName") String indexName,
                               @RequestParam(value = "queryField", required = false) String queryField,
-                              @RequestParam(value = "queryContent", required = false) String queryContent) throws Exception {
+                              @RequestParam(value = "queryContent", required = false) String queryContent,
+                              @RequestParam("readOnlyCount") boolean readOnlyCount) throws Exception {
         if (StringUtils.isBlank(indexName)) {
             return "索引名不能为空";
         }
@@ -219,12 +229,13 @@ public class ElasticsearchReportObstacleController {
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
         searchSourceBuilder.timeout(TimeValue.timeValueSeconds(5));
+        searchSourceBuilder.size(10000);
 
         if (StringUtils.isBlank(queryField)) {
             MatchAllQueryBuilder matchAllQueryBuilder = QueryBuilders.matchAllQuery();
             searchSourceBuilder.query(matchAllQueryBuilder);
         } else {
-            MatchQueryBuilder matchQueryBuilder = QueryBuilders.matchQuery(queryField, queryContent);
+            MatchPhraseQueryBuilder matchQueryBuilder = QueryBuilders.matchPhraseQuery(queryField, queryContent);
             searchSourceBuilder.query(matchQueryBuilder);
         }
 
@@ -234,7 +245,7 @@ public class ElasticsearchReportObstacleController {
         stopwatch.stop();
         SearchHit[] hits = search.getHits().getHits();
         List<Map<String, Object>> collect = Arrays.stream(hits).map(SearchHit::getSourceAsMap).collect(Collectors.toList());
-        return hits.length > 0 ? ResponseDto.success(collect, elapsed) : ResponseDto.success("无结果", elapsed);
+        return hits.length > 0 ? ResponseDto.success(readOnlyCount ? collect.size() : collect, elapsed) : ResponseDto.success("无结果", elapsed);
     }
 
     /**
@@ -247,9 +258,11 @@ public class ElasticsearchReportObstacleController {
     @PostMapping(value = "/getDocuments")
     @ApiOperation(value = "scroll查询所有文档[谨慎使用]", tags = "ES全文搜索")
     @ApiImplicitParams({
-            @ApiImplicitParam(name = "indexName", value = "索引名", required = true, dataType = "String", paramType = "query")
+            @ApiImplicitParam(name = "indexName", value = "索引名", required = true, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "readOnlyCount", value = "只显示数量", required = true, dataType = "boolean", paramType = "query")
     })
-    public ResponseDto getDocuments(@RequestParam("indexName") String indexName) throws Exception {
+    public ResponseDto getDocuments(@RequestParam("indexName") String indexName,
+                                    @RequestParam("readOnlyCount") boolean readOnlyCount) throws Exception {
         if (StringUtils.isBlank(indexName)) {
             return ResponseDto.error("索引名不能为空");
         }
@@ -301,6 +314,9 @@ public class ElasticsearchReportObstacleController {
         clearScrollRequest.setScrollIds(scrollIds);
         ClearScrollResponse clearScrollResponse = restHighLevelClient.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
         boolean succeeded = clearScrollResponse.isSucceeded();
+        if (readOnlyCount) {
+            return succeeded ? ResponseDto.success(collect.size(), elapsed) : ResponseDto.error("查询失败", elapsed);
+        }
         return succeeded ? ResponseDto.success(collect, elapsed) : ResponseDto.error("查询失败", elapsed);
     }
 
