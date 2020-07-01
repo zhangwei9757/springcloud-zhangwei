@@ -17,7 +17,8 @@ public class CodeGenerator {
 
     public static void main(String[] args) throws Exception {
         final String projectPath = System.getProperty("user.dir") + "\\" + "springcloud-elasticsearch7_8_0-zhangwei";
-        final String dataSourceUrl = "jdbc:mysql://localhost:3306/elasticsearch?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false";
+        final String dataSourceUrl = "jdbc:mysql://localhost:3306/elasticsearch?useUnicode=true&characterEncoding=utf8&" +
+                "zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC";
         final String driverClassName = "com.mysql.cj.jdbc.Driver";
         final String userName = "root";
         final String password = "jzbr";
