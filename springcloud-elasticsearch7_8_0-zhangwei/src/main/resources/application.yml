@@ -1,0 +1,14 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: elasticsearch-server
+#  elasticsearch:
+#    rest:
+#      uris:
+#      - http://localhost:9201
+#      - http://localhost:9202
+#      - http://localhost:9203
+#      username: elastic
+#      password: 123456
