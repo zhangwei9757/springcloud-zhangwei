@@ -1,7 +1,7 @@
 package com.zhangwei;
 
 import com.zhangwei.Beans.User;
-import com.zhangwei.bean.ReportObstacle;
+import com.zhangwei.dto.ReportObstacleDto;
 import com.zhangwei.utils.Defs;
 import com.zhangwei.utils.JsonUtils;
 import com.zhangwei.utils.RandomUtils;
@@ -80,6 +80,8 @@ public class SpringcloudElasticsearch780ZhangweiApplicationTests {
         GetIndexRequest indexRequest = new GetIndexRequest("users");
         boolean exists = restHighLevelClient.indices().exists(indexRequest, RequestOptions.DEFAULT);
         System.out.println(exists);
+//        GetIndexResponse getIndexResponse = restHighLevelClient.indices().get(indexRequest, RequestOptions.DEFAULT);
+//        System.out.println(getIndexResponse.getDataStreams());
     }
 
     /**
@@ -298,7 +300,7 @@ public class SpringcloudElasticsearch780ZhangweiApplicationTests {
         bulkRequest.timeout(TimeValue.timeValueSeconds(60));
 
         for (int i = dist_start; i < dist_end; i++) {
-            ReportObstacle reportObstacle = new ReportObstacle();
+            ReportObstacleDto reportObstacle = new ReportObstacleDto();
             reportObstacle.setId(System.currentTimeMillis());
             reportObstacle.setTroubleNo(System.currentTimeMillis());
             reportObstacle.setProblemTitle(UUID.randomUUID().toString());

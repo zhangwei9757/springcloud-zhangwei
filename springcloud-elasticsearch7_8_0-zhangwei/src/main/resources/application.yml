@@ -4,6 +4,45 @@ server:
 spring:
   application:
     name: elasticsearch-server
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://47.103.222.118:3306/elasticsearch?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: Tpl!f81qsxas
+    platform: mysql
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 10
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      # SELECT 1 FROM DUAL
+      validationQuery: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      filters: config,wall,stat
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      maxOpenPreparedStatements: 20
+      # 'druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000'
+      connectionProperties: druid.stat.slowSqlMillis=200;druid.stat.logSlowSql=true;config.decrypt=false
+      # 合并多个DruidDataSource的监控数据
+      #use-global-data-source-stat: true
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: /druid/*,*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico
+        session-stat-enable: true
+        session-stat-max-count: 10
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        reset-enable: true
+        login-username: admin
+        login-password: admin
 #  elasticsearch:
 #    rest:
 #      uris:
@@ -12,3 +51,32 @@ spring:
 #      - http://localhost:9203
 #      username: elastic
 #      password: 123456
+
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+      capital-mode: true
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mapper/**/*.xml
+
+management:
+  health:
+    db:
+      enabled: false
+    mail:
+      enabled: false
+    redis:
+      enabled: false
+    rabbit:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*" #暴露所有节点 "bus-refresh"
+    health:
+      senysssitive: false #关闭过滤敏感信息
+  endpoint:
+    health:
+      show-details: ALWAYS #显示详细信息

@@ -1,6 +1,6 @@
 package com.zhangwei.repository;
 
-import com.zhangwei.bean.Article;
+import com.zhangwei.dto.Article;
 import org.springframework.data.elasticsearch.repository.ElasticsearchRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package com.zhangwei.bean;
+package com.zhangwei.dto;
 
 import com.zhangwei.utils.Defs;
 import lombok.AllArgsConstructor;
@@ -18,7 +18,7 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 @NoArgsConstructor
 @AllArgsConstructor
 @Document(indexName = Defs.ES_INDEX_NAME)
-public class ReportObstacle {
+public class ReportObstacleDto {
 
     @Id
     private Long id;

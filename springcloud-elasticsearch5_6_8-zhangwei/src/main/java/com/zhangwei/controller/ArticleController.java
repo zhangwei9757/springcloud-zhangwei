@@ -1,6 +1,6 @@
 package com.zhangwei.controller;
 
-import com.zhangwei.bean.Article;
+import com.zhangwei.dto.Article;
 import com.zhangwei.repository.ArticleRepository;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -9,8 +9,6 @@ import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.elasticsearch.core.ElasticsearchTemplate;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.Objects;
 
 /**
  * @author zhangwei
