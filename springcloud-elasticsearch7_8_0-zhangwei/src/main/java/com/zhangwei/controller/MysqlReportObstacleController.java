@@ -172,7 +172,7 @@ public class MysqlReportObstacleController {
         }
         Stopwatch stopwatch = Stopwatch.createStarted();
         QueryWrapper<EsReportObstacle> queryWrapper = new QueryWrapper<>();
-        queryWrapper.like(queryField, "%" + queryContent + "%");
+        queryWrapper.like(queryField, queryContent);
         List<EsReportObstacle> reportObstacles = esReportObstacleMapper.selectList(queryWrapper);
         long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
         stopwatch.stop();
