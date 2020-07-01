@@ -6,10 +6,10 @@ spring:
     name: elasticsearch-server
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
-    url: jdbc:mysql://47.103.222.118:3306/elasticsearch?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    url: jdbc:mysql://localhost:3306/elasticsearch?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: Tpl!f81qsxas
+    password: jzbr
     platform: mysql
     druid:
       initial-size: 5
