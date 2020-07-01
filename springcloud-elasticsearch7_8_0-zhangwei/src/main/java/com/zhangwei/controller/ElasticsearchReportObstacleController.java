@@ -68,21 +68,21 @@ public class ElasticsearchReportObstacleController {
             @ApiImplicitParam(name = "indexName", value = "索引名", required = true, dataType = "String", paramType = "query"),
             @ApiImplicitParam(name = "mappings", value = "映射", required = true, dataType = "String", paramType = "query", defaultValue = "{\n" +
                     "  \"properties\": {\n" +
-                    "    \"troubleNo\": {\n" +
+                    "    \"obstacleNo\": {\n" +
                     "      \"type\":\"long\",\n" +
                     "      \"store\": true\n" +
                     "    },\n" +
-                    "    \"problemTitle\": {\n" +
+                    "    \"obstacleTitle\": {\n" +
                     "      \"type\": \"text\",\n" +
                     "      \"store\": true,\n" +
                     "      \"analyzer\": \"ik_smart\"\n" +
                     "    },\n" +
-                    "    \"problemDesc\": {\n" +
+                    "    \"obstacleDesc\": {\n" +
                     "      \"type\": \"text\",\n" +
                     "      \"store\": true,\n" +
                     "      \"analyzer\": \"ik_smart\"\n" +
                     "    },\n" +
-                    "    \"troubleTime\": {\n" +
+                    "    \"obstacleTime\": {\n" +
                     "      \"type\": \"long\",\n" +
                     "      \"store\": true\n" +
                     "    },\n" +
