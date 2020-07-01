@@ -1,5 +1,8 @@
 package com.zhangwei.controller;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.google.common.base.Stopwatch;
+import com.zhangwei.dto.ResponseDto;
 import com.zhangwei.entity.EsReportObstacle;
 import com.zhangwei.mapper.EsReportObstacleMapper;
 import io.swagger.annotations.Api;
@@ -23,6 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -121,8 +125,58 @@ public class MysqlReportObstacleController {
     @PostMapping(value = "/clearDataBase")
     @ApiOperation(value = "清空MYSQL数据库", tags = "MYSQL搜索")
     public Object clearDataBase() throws Exception {
-        Integer integer = esReportObstacleMapper.truncateTable();
-        return integer;
+        esReportObstacleMapper.truncateTable();
+        return "操作成功";
+    }
+
+    /**
+     * 查询所有数据
+     *
+     * @return
+     * @throws Exception
+     */
+    @PostMapping(value = "/findAll")
+    @ApiOperation(value = "查询所有数据[谨慎使用]", tags = "MYSQL搜索")
+    public ResponseDto findAll() throws Exception {
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        Integer integer = esReportObstacleMapper.selectCount(null);
+        if (integer != null && integer >= 10000) {
+            return ResponseDto.error("总数已达到10000, 禁止查询所有");
+        }
+        List<EsReportObstacle> reportObstacles = esReportObstacleMapper.selectList(null);
+        long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        stopwatch.stop();
+        return ResponseDto.success(reportObstacles, elapsed);
+    }
+
+    /**
+     * 查询数据
+     *
+     * @return
+     * @throws Exception
+     */
+    @PostMapping(value = "/findField")
+    @ApiOperation(value = "查询数据", tags = "MYSQL搜索")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "queryField", value = "查询字段", required = false, dataType = "String", paramType = "query"),
+            @ApiImplicitParam(name = "queryContent", value = "查询内容", required = false, dataType = "String", paramType = "query")
+    })
+    public Object findField(@RequestParam(value = "queryField", required = false) String queryField,
+                            @RequestParam(value = "queryContent", required = false) String queryContent) throws Exception {
+        if (StringUtils.isBlank(queryField)) {
+            return "查询字段不能为空";
+        }
+
+        if (StringUtils.isBlank(queryContent)) {
+            return "查询内容不能为空";
+        }
+        Stopwatch stopwatch = Stopwatch.createStarted();
+        QueryWrapper<EsReportObstacle> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(queryField, "%" + queryContent + "%");
+        List<EsReportObstacle> reportObstacles = esReportObstacleMapper.selectList(queryWrapper);
+        long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        stopwatch.stop();
+        return ResponseDto.success(reportObstacles, elapsed);
     }
 
     /**

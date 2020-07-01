@@ -1,6 +1,8 @@
 package com.zhangwei.controller;
 
+import com.google.common.base.Stopwatch;
 import com.zhangwei.dto.ReportObstacleDto;
+import com.zhangwei.dto.ResponseDto;
 import com.zhangwei.utils.JsonUtils;
 import com.zhangwei.utils.RandomUtils;
 import io.swagger.annotations.Api;
@@ -34,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -211,7 +214,7 @@ public class ElasticsearchReportObstacleController {
         if (StringUtils.isBlank(indexName)) {
             return "索引名不能为空";
         }
-
+        Stopwatch stopwatch = Stopwatch.createStarted();
         SearchRequest searchRequest = new SearchRequest(indexName);
 
         SearchSourceBuilder searchSourceBuilder = new SearchSourceBuilder();
@@ -227,9 +230,11 @@ public class ElasticsearchReportObstacleController {
 
         searchRequest.source(searchSourceBuilder);
         SearchResponse search = restHighLevelClient.search(searchRequest, RequestOptions.DEFAULT);
+        long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        stopwatch.stop();
         SearchHit[] hits = search.getHits().getHits();
         List<Map<String, Object>> collect = Arrays.stream(hits).map(SearchHit::getSourceAsMap).collect(Collectors.toList());
-        return hits.length > 0 ? collect : "无结果";
+        return hits.length > 0 ? ResponseDto.success(collect, elapsed) : ResponseDto.success("无结果", elapsed);
     }
 
     /**
@@ -240,15 +245,15 @@ public class ElasticsearchReportObstacleController {
      * @throws Exception
      */
     @PostMapping(value = "/getDocuments")
-    @ApiOperation(value = "scroll查询所有文档", tags = "ES全文搜索")
+    @ApiOperation(value = "scroll查询所有文档[谨慎使用]", tags = "ES全文搜索")
     @ApiImplicitParams({
             @ApiImplicitParam(name = "indexName", value = "索引名", required = true, dataType = "String", paramType = "query")
     })
-    public Object getDocuments(@RequestParam("indexName") String indexName) throws Exception {
+    public ResponseDto getDocuments(@RequestParam("indexName") String indexName) throws Exception {
         if (StringUtils.isBlank(indexName)) {
-            return "索引名不能为空";
+            return ResponseDto.error("索引名不能为空");
         }
-
+        Stopwatch stopwatch = Stopwatch.createStarted();
         SearchRequest searchRequest = new SearchRequest(indexName);
         searchRequest.scroll(TimeValue.timeValueSeconds(60));
 
@@ -266,6 +271,12 @@ public class ElasticsearchReportObstacleController {
         String temp = scrollId;
 
         SearchHit[] hits = search.getHits().getHits();
+        if (hits.length >= 10000) {
+            ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
+            clearScrollRequest.setScrollIds(scrollIds);
+            restHighLevelClient.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
+            return ResponseDto.error("总数已达到10000, 禁止查询所有");
+        }
         List<Map<String, Object>> collect = Arrays.stream(hits).map(SearchHit::getSourceAsMap).collect(Collectors.toList());
 
         while (true) {
@@ -284,12 +295,13 @@ public class ElasticsearchReportObstacleController {
                 scrollIds.add(scrollId1);
             }
         }
-
+        long elapsed = stopwatch.elapsed(TimeUnit.MILLISECONDS);
+        stopwatch.stop();
         ClearScrollRequest clearScrollRequest = new ClearScrollRequest();
         clearScrollRequest.setScrollIds(scrollIds);
         ClearScrollResponse clearScrollResponse = restHighLevelClient.clearScroll(clearScrollRequest, RequestOptions.DEFAULT);
         boolean succeeded = clearScrollResponse.isSucceeded();
-        return succeeded ? collect : "查询失败";
+        return succeeded ? ResponseDto.success(collect, elapsed) : ResponseDto.error("查询失败", elapsed);
     }
 
     /**
@@ -307,8 +319,8 @@ public class ElasticsearchReportObstacleController {
             @ApiImplicitParam(name = "queryContent", value = "查询内容", required = false, dataType = "String", paramType = "query")
     })
     public Object deleteDocument(@RequestParam("indexName") String indexName,
-                              @RequestParam(value = "queryField", required = false) String queryField,
-                              @RequestParam(value = "queryContent", required = false) String queryContent) throws Exception {
+                                 @RequestParam(value = "queryField", required = false) String queryField,
+                                 @RequestParam(value = "queryContent", required = false) String queryContent) throws Exception {
         if (StringUtils.isBlank(indexName)) {
             return "索引名不能为空";
         }
