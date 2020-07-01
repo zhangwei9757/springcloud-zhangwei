@@ -302,11 +302,11 @@ public class SpringcloudElasticsearch780ZhangweiApplicationTests {
         for (int i = dist_start; i < dist_end; i++) {
             ReportObstacleDto reportObstacle = new ReportObstacleDto();
             reportObstacle.setId(System.currentTimeMillis());
-            reportObstacle.setTroubleNo(System.currentTimeMillis());
-            reportObstacle.setProblemTitle(UUID.randomUUID().toString());
+            reportObstacle.setObstacleNo(System.currentTimeMillis());
+            reportObstacle.setObstacleTitle(UUID.randomUUID().toString());
             int between = RandomUtils.getBetween(0, size);
-            reportObstacle.setProblemDesc(contents.substring(between));
-            reportObstacle.setTroubleTime(System.currentTimeMillis());
+            reportObstacle.setObstacleDesc(contents.substring(between));
+            reportObstacle.setObstacleTime(System.currentTimeMillis());
             between = between < 4 ? 4 : between;
             reportObstacle.setSystemName(contents.substring(between - 4, between));
             between = between >= size ? size - 2 : between;
