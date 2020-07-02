@@ -98,7 +98,6 @@
             <version>1.1.10</version>
         </dependency>
 
-        <!--一定要有这个玩意，模板，否则mybatisplus逆向工程生成代码找不到模板-->
         <!--<dependency>-->
             <!--<groupId>org.apache.velocity</groupId>-->
             <!--<artifactId>velocity</artifactId>-->
