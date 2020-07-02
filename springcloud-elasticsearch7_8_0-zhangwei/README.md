@@ -1928,6 +1928,7 @@ GET troublereport-sever/_search
 
 | spring data elasticsearch | elasticsearch |
 | ------------------------- | ------------- |
+| 4.0.x                     | 7.6.2         |
 | 3.2.x                     | 6.5.0         |
 | 3.1.x                     | 6.2.2         |
 | 3.0.x                     | 5.5.0         |
