@@ -1937,26 +1937,7 @@ GET troublereport-sever/_search
 
 
 
-## 测试总结 ： Elasticsearch与Mysql 经对比测试，十万的数量，Elasticsearch差不多有十倍的差据，如果面对更大数据量，差据更大，而Elasticsearch 性能几乎没有什么波动
+## 测试总结 ：Elasticsearch  VS  Mysql 
 
-> 下面是Elasticsearch查询结果
-
-```json
-{
-  "code": 200,
-  "msg": "操作成功",
-  "data": 1243,
-  "duration": 31
-}
-```
-
-> 下面是Mysql查询结果
-```json
-{
-  "code": 200,
-  "msg": "操作成功",
-  "data": 1800,
-  "duration": 363
-}
-```
+>  Elasticsearch与Mysql 经对比测试，十万的数据量场景下，和Elasticsearch差不多有十倍的差距，如果面对更大的数据量，差距更大，而Elasticsearch 性能几乎没有什么波动
 
