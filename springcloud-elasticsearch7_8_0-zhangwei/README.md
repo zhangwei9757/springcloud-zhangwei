@@ -29,7 +29,6 @@
 
     text：可分词，不可参与聚合
     keyword：不可分词，数据会作为完整字段进行匹配，可以参与聚合
-    Numerical：数值类型，分两类
 
 2. 基本数据类型：long、interger、short、byte、double、float、half_float
 3. 浮点数的高精度类型：scaled_float
