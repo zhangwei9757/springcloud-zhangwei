@@ -90,9 +90,22 @@ Started connect web server on http://localhost:9100
 >4. 打开浏览器，扩展程序，添加解压的目录即可
 >5. 点击新添加的扩展程序图标，点击连接
 
+## 6.  Kibana安装
 
+> 1. https://mirrors.huaweicloud.com/kibana/?C=N&O=D
+> 2. 解压缩
+> 3. 添加如下配置项
 
-## 6.  Elasticsearch 核心概念
+```yaml
+elasticsearch.hosts: ["http://ip:9201","http://ip:9202","http://ip:9203"]
+elasticsearch.username: "kibana_system"
+elasticsearch.password: "password"
+```
+
+> 4. linux 启动:  nohup bin/kibana > kibana.log  2>&1 &
+> 5. windows启动: bin\kibana.bat 双击运行
+
+## 7.  Elasticsearch 核心概念
 
 > 快速开始:  https://www.elastic.co/guide/en/elasticsearch/reference/current/getting-started.html 
 >
@@ -108,7 +121,7 @@ Started connect web server on http://localhost:9100
 
 
 
-## 7.  Elasticsearch 使用RESTful [单集群]
+## 8.  Elasticsearch 使用RESTful [单集群]
 
 ### 1. 添加索引
 
@@ -517,7 +530,7 @@ GET zw/_search
 
 
 
-## 8.  Elasticsearch 安装 IK分词 插件
+## 9.  Elasticsearch 安装 IK分词 插件
 
 ### 1.  下载
 
@@ -601,7 +614,7 @@ POST http://127.0.0.1:9201/_analyze
 
 
 
-## 9. Elasticsearch 集群
+## 10. Elasticsearch 集群
 
 ### 1. 复制es 解压包
 
@@ -901,13 +914,13 @@ ip        heap.percent ram.percent cpu load_1m load_5m load_15m node.role master
 
 
 
-## 10.  Elasticsearch 使用 RESTful [多集群]
+## 11.  Elasticsearch 使用 RESTful [多集群]
 
 ### 10.1  CRUD
 
 > 与单机集群版本一样, 略过......
 
-### 10.2  如何优雅的实现分页
+### 11.2  如何优雅的实现分页
 
 * 方式一 :from ,size 面对少量数据很好用
 
@@ -916,7 +929,7 @@ ip        heap.percent ram.percent cpu load_1m load_5m load_15m node.role master
 > 1. 首先, es 目前支持最大的 skip 值是 max_result_window ，默认为 10000 。也就是当 from + size > max_result_window 时，es 将返回错误
 > 2. from, sizw 看似好用，其实每次查询是查询出各自分片服务器对应分布参数的队列结果，然后一起汇总再分页，其实就是把查询出来的from值以前的数据丢掉，返回from至size的结果集，数据小还可以使用这种方式 ，当面对大数据，成百上千万的数据量时，会直接使服务器瘫痪， 有兴趣的盆友可以用本地环境测试一下
 
-### 10.3   from ,size分页  
+### 11.3   from ,size分页  
 
 #### 1. 首先先确认下我们的数据量 
 
@@ -1159,7 +1172,7 @@ GET troublereport-sever/_search
 
 
 
-### 10. 4   scroll分页
+### 11. 4   scroll分页
 
 #### 1. 演示 scroll  分页
 
@@ -1880,7 +1893,7 @@ GET troublereport-sever/_search
 
 
 
-### 10.5 分页功能总结
+### 11.5 分页功能总结
 
 >1. es的并发scroll不适合深度翻页，只适合拉取所有数据。若使用scroll的话，尽管能读取许多数据，但是查询出来的结果都是无序的。
 >
@@ -1900,7 +1913,7 @@ GET troublereport-sever/_search
 
 
 
-## 11.  SpringBoot 使用 Elasticsearch
+## 12.  SpringBoot 使用 Elasticsearch
 
 ### 1. 创建项目
 
