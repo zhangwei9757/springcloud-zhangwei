@@ -25,6 +25,7 @@
         <module>springcloud-elasticsearch5_6_8-zhangwei</module>
         <module>springcloud-elasticsearch7_8_0-zhangwei</module>
         <module>springcloud-oauth2-zhangwei</module>
+        <module>springcloud-cos-zhangwei</module>
     </modules>
 
     <dependencyManagement>
