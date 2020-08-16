@@ -1,0 +1,1 @@
+同步父工程版本号: mvn -N versions:update-child-modules
