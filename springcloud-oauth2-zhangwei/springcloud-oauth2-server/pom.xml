@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.zhangwei</groupId>
-        <artifactId>springcloud-ouath2-zhangwei</artifactId>
+        <artifactId>springcloud-oauth2-zhangwei</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
