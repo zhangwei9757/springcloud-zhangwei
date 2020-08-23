@@ -86,6 +86,7 @@
             ws.onclose = function (event) {
                 // alert("连接已关闭...");
                 $("#message").text("连接已关闭: " + event);
+                $("#conncet").html("<font style=\"color: red;\">websocket 已断开</font>");
             };
         };
     }
