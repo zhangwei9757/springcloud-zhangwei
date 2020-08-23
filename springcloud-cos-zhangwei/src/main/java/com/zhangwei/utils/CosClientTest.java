@@ -39,7 +39,7 @@ public class CosClientTest {
         ClientConfig clientConfig = new ClientConfig(new Region(REGIONID));
         // 3 init cosclient
         COSClient cosclient = new COSClient(cred, clientConfig);
-        // bucket name protocol   must be {name}-{appid}
+        // bucket name protos   must be {name}-{appid}
         return cosclient;
     }
 

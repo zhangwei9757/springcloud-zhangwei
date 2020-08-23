@@ -27,6 +27,7 @@
         <module>springcloud-elasticsearch7_8_0-zhangwei</module>
         <module>springcloud-oauth2-zhangwei</module>
         <module>springcloud-cos-zhangwei</module>
+        <module>websocket-zhangwei</module>
     </modules>
 
     <dependencyManagement>
