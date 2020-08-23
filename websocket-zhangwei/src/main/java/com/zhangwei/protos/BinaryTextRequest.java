@@ -41,7 +41,7 @@ public class BinaryTextRequest extends BaseProtocol {
             charBuffer = decoder.decode(buffer.asReadOnlyBuffer());
             String content = charBuffer.toString();
 
-            log.info(">>> 接收到 " + user.getSocketSession().getId() + " 发送的二进制转字符串内容: " + content);
+            log.info(">>> 接收到 " + user.getUid() + " 发送的二进制转字符串内容: " + content);
         } catch (Exception e) {
             log.error("receive protocol [" + this.getProtoType() + "] data(" + buffer + ") handler error:", e);
         }
