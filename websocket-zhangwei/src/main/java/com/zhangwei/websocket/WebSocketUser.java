@@ -132,10 +132,6 @@ public class WebSocketUser {
         // TODO 此处写对应准备离线用户，下线前的回调事件
     }
 
-    public void update() {
-
-    }
-
     /**
      * 用户发送协议，发送给指定另一个用户
      *
