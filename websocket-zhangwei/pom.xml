@@ -17,6 +17,12 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.zhangwei</groupId>
+            <artifactId>microservice-websocket-spring-boot-starter</artifactId>
+            <version>1.0</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-websocket</artifactId>
         </dependency>

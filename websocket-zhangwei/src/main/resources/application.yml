@@ -4,3 +4,7 @@ server:
 spring:
   application:
     name: websocket-zhangwei
+microservice:
+  websocket:
+    async-send-timeout: 0
+    max-session-idle-timeout: 1800000
