@@ -236,7 +236,7 @@ public class MysqlReportObstacleController {
             executor.execute(() -> {
                 int endNum = (temp + 1) * dealSize - 1;
                 if (endNum >= collect.size()) {
-                    endNum = collect.size() - 1;
+                    endNum = collect.size();
                 }
                 esReportObstacleMapper.insertBatch(collect.subList(temp * dealSize, endNum));
                 countDownLatch.countDown();
