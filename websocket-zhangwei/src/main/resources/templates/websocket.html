@@ -52,7 +52,7 @@
             //当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
             console.log(this.result);
 
-            var data = protoEncoderMessage(2147483647, 2, this.result);
+            var data = protoEncoderMessage(2147483647, 3, this.result);
             console.log(data);
             ws.send(data);
         }

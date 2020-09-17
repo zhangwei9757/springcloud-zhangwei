@@ -6,5 +6,7 @@ spring:
     name: websocket-zhangwei
 microservice:
   websocket:
+    enabled: true
     async-send-timeout: 0
     max-session-idle-timeout: 1800000
+    max-binary-message-buffer-size: 16777216
