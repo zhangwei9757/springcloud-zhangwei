@@ -1,6 +1,6 @@
-package com.zhangwei.utils;
+package com.microservice.utils;
 
-import com.zhangwei.protocol.BaseProtocol;
+import com.microservice.protocol.BaseProtocol;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
@@ -13,7 +13,7 @@ import java.util.Objects;
  * <p> 协议转换工具
  */
 @Slf4j
-public class protoUtils {
+public class ProtoUtils {
 
     /**
      * 协议名获取协议
@@ -23,6 +23,14 @@ public class protoUtils {
      */
     public static String protoToClass(String type) {
         try {
+            if (Objects.isNull(type)) {
+                return null;
+            }
+
+            if (type.length() <=0) {
+                return null;
+            }
+
             byte[] items = type.getBytes();
 
             int i = (int) items[0];

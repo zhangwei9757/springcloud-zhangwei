@@ -1,0 +1,120 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "name": "microservice.scheduler",
+      "type": "com.microservice.bean.SchedulerConfigurationProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": true,
+      "name": "microservice.scheduler.allow-log",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": "",
+      "name": "microservice.scheduler.cluster-address",
+      "description": "Cluster registered address, ip:port;ip:port...",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": "\/actuator\/health",
+      "name": "microservice.scheduler.cluster-health-check-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": 5,
+      "name": "microservice.scheduler.cluster-heartbeat",
+      "description": "Unit second",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": 0,
+      "name": "microservice.scheduler.cluster-heartbeat-timeout",
+      "description": "Unit second",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": "scheduler",
+      "name": "microservice.scheduler.cluster-name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": 5,
+      "name": "microservice.scheduler.cluster-vote-time",
+      "description": "Unit second",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": 0,
+      "name": "microservice.scheduler.cluster-vote-timeout",
+      "description": "Unit second",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "name": "microservice.scheduler.register-name",
+      "description": "Client registration name, cluster member registration name",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": 9999,
+      "name": "microservice.scheduler.server-port",
+      "description": "Server boot port",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": 128,
+      "name": "microservice.scheduler.server-threads",
+      "type": "java.lang.Integer"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": "scheduler description",
+      "name": "microservice.scheduler.swagger-description",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": "schedulerLicense",
+      "name": "microservice.scheduler.swagger-license",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": "www.schedulerLicenseUrl.com",
+      "name": "microservice.scheduler.swagger-license-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": "www.schedulerExample.com",
+      "name": "microservice.scheduler.swagger-terms-of-service-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": "Scheduler Api Document",
+      "name": "microservice.scheduler.swagger-title",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": "1.0",
+      "name": "microservice.scheduler.swagger-version",
+      "type": "java.lang.String"
+    }
+  ]
+}
