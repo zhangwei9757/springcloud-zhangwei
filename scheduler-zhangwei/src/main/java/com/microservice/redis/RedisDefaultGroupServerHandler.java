@@ -193,7 +193,7 @@ public class RedisDefaultGroupServerHandler {
                     .findFirst()
                     .orElse(null);
 
-            if (Objects.nonNull(realVote)) {
+            if (Objects.nonNull(realVote) && register.ipMappingPort().equals(realVote.ipMappingPort())) {
                 register.setRegisterTime(realVote.getRegisterTime())
                         .setDeRegisterTime(null)
                         .setStatus(HostStatusEnum.UP.getType());
