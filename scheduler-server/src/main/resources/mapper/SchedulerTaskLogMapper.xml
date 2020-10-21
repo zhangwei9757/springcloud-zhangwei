@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.microservice.mapper.SchedulerTaskLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.microservice.entity.SchedulerTaskLog">
+        <id column="log_id" property="logId" />
+        <result column="log_registry_detail_id" property="logRegistryDetailId" />
+        <result column="log_task_id" property="logTaskId" />
+        <result column="log_task_type" property="logTaskType" />
+        <result column="log_executor_address" property="logExecutorAddress" />
+        <result column="log_executor_handler" property="logExecutorHandler" />
+        <result column="log_executor_param" property="logExecutorParam" />
+        <result column="log_trigger_time" property="logTriggerTime" />
+        <result column="log_trigger_code" property="logTriggerCode" />
+        <result column="log_trigger_msg" property="logTriggerMsg" />
+        <result column="log_handle_time" property="logHandleTime" />
+        <result column="log_handle_code" property="logHandleCode" />
+        <result column="log_handle_msg" property="logHandleMsg" />
+        <result column="log_alarm_status" property="logAlarmStatus" />
+        <result column="log_create_time" property="logCreateTime" />
+    </resultMap>
+
+    <select id="findTaskLogsByParams" resultType="com.microservice.dto.SchedulerTaskLogRequestDto">
+        SELECT * FROM (
+        SELECT d.`register_detail_app_name`, d.`register_detail_ip`, d.`register_detail_port`,
+        c.`task_cron_desc`,c.`task_cron_expression`,c.`task_cron_job_handler`,c.`task_cron_write_log`,
+        l.*
+        FROM `scheduler_task_log` l, `scheduler_registry_detail` d, `scheduler_task_cron` c
+        WHERE l.`log_registry_detail_id` = d.`register_detail_id` AND l.`log_task_id` = c.`task_cron_id` AND l.`log_task_type` = '0'
+        UNION ALL
+        SELECT d.`register_detail_app_name`, d.`register_detail_ip`, d.`register_detail_port`,
+        g.`task_given_desc`,g.`task_given_time`,g.`task_given_job_handler`,g.`task_given_write_log`,
+        l.*
+        FROM `scheduler_task_log` l, `scheduler_registry_detail` d, `scheduler_task_given` g
+        WHERE l.`log_registry_detail_id` = d.`register_detail_id` AND l.`log_task_id` = g.`task_given_id` AND l.`log_task_type` = '1'
+        ) AS temp
+        <where>
+            <if test="param.logExecutorAddress != null and param.logExecutorAddress != ''">
+                temp.`log_executor_address` = #{param.logExecutorAddress}
+            </if>
+            <if test="param.logExecutorHandler != null and param.logExecutorHandler != ''">
+                temp.`log_executor_handler` like concat('%', #{param.logExecutorHandler},'%')
+            </if>
+            <if test="param.logHandleCode != null and param.logHandleCode != ''">
+                AND temp.`log_handle_code` like concat('%', #{param.logHandleCode},'%')
+            </if>
+        </where>
+    </select>
+
+</mapper>

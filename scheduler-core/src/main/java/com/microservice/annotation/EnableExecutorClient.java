@@ -17,9 +17,11 @@ import java.lang.annotation.Target;
  * 6. 服务器集群功能                [已完成]
  * 7. 服务器重上线,加入集群          [已完成]
  * 8. 执行器集群功能,负载均衡         [已完成]
- * 9. cron表达式解析,特定时间执行     [进行中]
+ * 9. cron表达式解析,特定时间执行     [已完成]
  * 10. 服务器上下线邮件通知           [未开始]
  * 11. 集群客户端通信能力             [已完成]
+ *
+ * cron, register,
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)

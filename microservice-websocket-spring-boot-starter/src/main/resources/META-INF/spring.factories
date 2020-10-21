@@ -1,1 +1,1 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.zhangwei.config.WebsocketAutoConfiguration
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.microservice.config.WebsocketAutoConfiguration

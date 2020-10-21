@@ -43,7 +43,7 @@ public class SchedulerConfigurationProperties implements Serializable {
     /**
      * Unit second
      */
-    private long clusterHeartbeatTimeout = clusterHeartbeat * 2;
+    private long clusterHeartbeatTimeout = 15;
     /**
      * Unit second
      */
@@ -54,23 +54,35 @@ public class SchedulerConfigurationProperties implements Serializable {
     private long clusterVoteTimeout = clusterVoteTime * 2;
     private String clusterName = "scheduler";
     private String clusterHealthCheckUrl = "/actuator/health";
+    /**
+     * Unit second
+     */
+    private long clusterCronTaskScanningCycle = 1;
+    /**
+     * Unit second
+     */
+    private long clusterGivenTaskScanningCycle = 5;
+    /**
+     * Unit second
+     */
+    private long clusterActuatorStatusScanningCycle = 10;
 
     /**
      * Client read timeout, Unit second
      */
-    private final long readerIdleTimeNanos = 5;
+    private final long readerIdleTimeNanos = clusterHeartbeat * 2;
     /**
      * Client write timeout, Unit second
      */
-    private final long writerIdleTimeNanos = 5;
+    private final long writerIdleTimeNanos = clusterHeartbeat * 2;
     /**
      * Client read write timeout, Unit second
      */
-    private final long allIdleTimeNanos = 10;
+    private final long allIdleTimeNanos = readerIdleTimeNanos + writerIdleTimeNanos;
     /**
      * ping time interval, Unit second
      */
-    private final long ping = writerIdleTimeNanos - 1;
+    private final long ping = clusterHeartbeat;
 
     private final String swaggerBasePath = "";
     private String swaggerTitle = "Scheduler Api Document";
@@ -82,8 +94,10 @@ public class SchedulerConfigurationProperties implements Serializable {
     private String swaggerLicense = "schedulerLicense";
     private String swaggerLicenseUrl = "www.schedulerLicenseUrl.com";
     private String swaggerVersion = "1.0";
+    private boolean swaggerEnable = false;
 
     private boolean allowLog = true;
+    private boolean enableChatRoom = false;
 
     /**
      * 默认返回第一个集群主机ip
@@ -127,6 +141,14 @@ public class SchedulerConfigurationProperties implements Serializable {
     public String mergeIpPort(String ip, int port) {
         if (!StringUtils.isAllBlank(ip, String.valueOf(port))) {
             return ip + ":" + port;
+        }
+        return null;
+    }
+
+    @JsonIgnore
+    public static String[] splitIpPort(String ipPort) {
+        if (StringUtils.isNotBlank(ipPort)) {
+            return ipPort.split(":");
         }
         return null;
     }

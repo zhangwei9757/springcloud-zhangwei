@@ -30,7 +30,7 @@ public enum RedisListenerEnum {
     /**
      * 集群成员通知
      */
-    SERVER_NOTIFY("scheduler_server_notify"),
+    SCHEDULER_NOTIFY("scheduler_notify"),
 
     /**
      * 同步客户端消息通知

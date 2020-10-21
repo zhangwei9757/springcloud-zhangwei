@@ -18,7 +18,7 @@ import java.util.Map;
 @Component
 public class ApplicationContextUtil implements ApplicationContextAware {
 
-    private static ApplicationContext APPLICATION_CONTEXT;
+    public static ApplicationContext APPLICATION_CONTEXT;
 
     public static <T> T getBean(Class<T> clazz) {
         try {

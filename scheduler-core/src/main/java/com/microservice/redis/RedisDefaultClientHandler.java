@@ -1,6 +1,7 @@
 package com.microservice.redis;
 
-import com.microservice.annotation.CacheLock;
+import com.google.common.collect.Sets;
+import com.microservice.annotation.lock.CacheLock;
 import com.microservice.bean.RedisMessage;
 import com.microservice.bean.SchedulerConfigurationProperties;
 import com.microservice.bean.SchedulerServerRegister;
@@ -10,6 +11,7 @@ import com.microservice.utils.Constants;
 import com.microservice.utils.JsonUtils;
 import com.microservice.utils.RandomUtils;
 import com.microservice.utils.RedisUtil;
+import io.netty.channel.Channel;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -18,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import java.net.InetAddress;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -448,4 +451,34 @@ public class RedisDefaultClientHandler {
         return Constants.SCHEDULER_SERVER_HEARTBEAT + suffix;
     }
 
+    /**
+     * 获取客户端通道自己的ipv4 地址
+     *
+     * @param channel
+     * @return
+     */
+    public static String findAddressByChannel(Channel channel) {
+        SocketAddress socketAddress = channel.localAddress();
+        String address = socketAddress.toString();
+        address = address.replaceAll("/", "");
+        try {
+            return address.split(":")[0];
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 获取所有的服务器url
+     *
+     * @return
+     */
+    public Set<String> findAllWebApi() {
+        Set<RedisMessage> votes = this.findVotes(Constants.SCHEDULER_SERVER_VOTE_PREF);
+        Set<String> urls = votes.parallelStream().map(RedisMessage::getHealthIpPort).collect(Collectors.toSet());
+        if (CollectionUtils.isEmpty(urls)) {
+            return Sets.newHashSet();
+        }
+        return urls;
+    }
 }

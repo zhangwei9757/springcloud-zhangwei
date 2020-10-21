@@ -3,7 +3,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.zhangwei</groupId>
+        <groupId>com.microservice</groupId>
         <artifactId>springcloud-zhangwei</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
@@ -17,9 +17,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.zhangwei</groupId>
+            <groupId>com.microservice</groupId>
             <artifactId>microservice-websocket-spring-boot-starter</artifactId>
-            <version>1.0</version>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>

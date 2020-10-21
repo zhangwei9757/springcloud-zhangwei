@@ -10,12 +10,10 @@ import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.util.CollectionUtils;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 public class JsonUtils {
@@ -90,14 +88,18 @@ public class JsonUtils {
      * @return
      * @throws IOException
      */
-    public static <T> T fromJson(String data, Class<T> cls) {
+    public static <T> T fromJson(String data, Class<T> cls, Object ... args) {
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         mapper.configure(DeserializationFeature.FAIL_ON_MISSING_CREATOR_PROPERTIES, false);
         mapper.configure(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES, false);
         try {
             return mapper.readValue(data, cls);
         } catch (IOException e) {
-            log.error("--->>> String:{} To Object:{} error, reason: {}", data, cls, e.getMessage(), e);
+            if (Objects.isNull(args)) {
+                log.error("--->>> String:{} To Object:{} error, reason: {}", data, cls, e.getMessage(), e);
+            } else {
+                log.error("--->>> String:{} To Object:{} error, reason: {}", data, cls, e.getMessage());
+            }
             return null;
         }
     }

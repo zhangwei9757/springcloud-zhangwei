@@ -8,7 +8,7 @@
         <version>2.0.3.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.zhangwei</groupId>
+    <groupId>com.microservice</groupId>
     <artifactId>springcloud-zhangwei</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>springcloud-zhangwei</name>
@@ -20,14 +20,23 @@
         <spring-cloud.version>Greenwich.SR1</spring-cloud.version>
         <maven.compiler.source>1.8</maven.compiler.source>
         <maven.compiler.target>1.8</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <tomcat.version>9.0.37</tomcat.version>
     </properties>
 
     <modules>
         <module>springcloud-elasticsearch5_6_8-zhangwei</module>
-        <module>springcloud-elasticsearch7_8_0-zhangwei</module>
-        <module>springcloud-oauth2-zhangwei</module>
         <module>springcloud-cos-zhangwei</module>
+        <module>springsecurity-zhangwei</module>
         <module>websocket-zhangwei</module>
+        <module>py-callback-spring-boot-starter</module>
+        <module>microservice-websocket-spring-boot-starter</module>
+        <module>sequoiadb-zhangwei</module>
+
+        <module>scheduler-core</module>
+        <module>scheduler-server</module>
+        <module>scheduler-example-executor</module>
     </modules>
 
     <dependencyManagement>
@@ -109,6 +118,12 @@
                 <version>2.21.0</version>
             </dependency>
 
+            <!-- 巨杉数据库s3 -->
+<!--            <dependency>-->
+<!--                <groupId>com.amazonaws</groupId>-->
+<!--                <artifactId>aws-java-sdk-bom</artifactId>-->
+<!--                <version>1.11.343</version>-->
+<!--            </dependency>-->
         </dependencies>
     </dependencyManagement>
 
@@ -143,11 +158,11 @@
             <artifactId>spring-boot-starter-actuator</artifactId>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework</groupId>
-            <artifactId>springloaded</artifactId>
-            <version>1.2.2.RELEASE</version>
-        </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.springframework</groupId>-->
+<!--            <artifactId>springloaded</artifactId>-->
+<!--            <version>1.2.2.RELEASE</version>-->
+<!--        </dependency>-->
 
         <!--<dependency>-->
         <!--<groupId>org.springframework.boot</groupId>-->
@@ -250,10 +265,10 @@
 
     <build>
         <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.springframework.boot</groupId>-->
+<!--                <artifactId>spring-boot-maven-plugin</artifactId>-->
+<!--            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>

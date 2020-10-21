@@ -1,7 +1,7 @@
 package com.microservice.aop;
 
 import com.microservice.exception.CacheLockException;
-import com.microservice.annotation.CacheLock;
+import com.microservice.annotation.lock.CacheLock;
 import com.microservice.utils.RedisUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -32,7 +32,7 @@ public class NotDuplicateRedisLockAop {
     @Resource
     private RedisUtil redisAbsentUtils;
 
-    @Around("@annotation(com.microservice.annotation.CacheLock)")
+    @Around("@annotation(com.microservice.annotation.lock.CacheLock)")
     public Object interceptor(ProceedingJoinPoint pjp) {
         MethodSignature signature = (MethodSignature) pjp.getSignature();
         Method method = signature.getMethod();

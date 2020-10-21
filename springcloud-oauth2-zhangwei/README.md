@@ -93,7 +93,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.zhangwei</groupId>
+    <groupId>com.microservice</groupId>
     <artifactId>authorization-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
@@ -446,7 +446,7 @@ token:eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE1OTI1OTE3MTUsInVzZXJfbmFtZ
         <version>2.1.15.RELEASE</version>
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
-    <groupId>com.zhangwei</groupId>
+    <groupId>com.microservice</groupId>
     <artifactId>springcloud-oauth2-resources</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>springcloud-oauth2-resources</name>

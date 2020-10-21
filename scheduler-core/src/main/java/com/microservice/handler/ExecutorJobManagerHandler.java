@@ -15,7 +15,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.MethodIntrospector;
 import org.springframework.core.annotation.AnnotatedElementUtils;
+import org.springframework.core.env.Environment;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import javax.annotation.Resource;
 import java.lang.reflect.Method;
@@ -36,6 +38,9 @@ public class ExecutorJobManagerHandler {
     @Resource
     private ApplicationContext applicationContext;
 
+    @Resource
+    private Environment environment;
+
     /**
      * 注册执行器 applicationName + ip + no
      *
@@ -48,13 +53,18 @@ public class ExecutorJobManagerHandler {
 
         SocketAddress socketAddress = channel.localAddress();
         String address = socketAddress.toString();
+        address = address.replaceAll("/", "");
         String[] split = address.split(":");
+        String appName = environment.getProperty("spring.application.name");
+        String port = environment.getProperty("server.port");
 
-        ExecutorJobMessage jobDto = new ExecutorJobMessage();
-        jobDto.setHost(split[0]);
-        jobDto.setPort(split[1]);
-        jobDto.setProperties(properties);
-        String json = JsonUtils.toJson(jobDto);
+        // 此处包含了，客户端注册时的信息，注册名，ip, port
+        ExecutorJobMessage executorJobMessage = new ExecutorJobMessage();
+        executorJobMessage.setHost(split[0]);
+        executorJobMessage.setPort(port);
+        executorJobMessage.setProperties(properties);
+        executorJobMessage.setAppName(appName);
+        String json = JsonUtils.toJson(executorJobMessage);
 
         assert json != null;
         MessageProtocolPoJo.MessageProtocol messageProtocol = MessageProtocolPoJo.MessageProtocol
@@ -98,8 +108,6 @@ public class ExecutorJobManagerHandler {
                     throw new RuntimeException("ExecutorJob method-jobhandler jobName invalid, for[" + bean.getClass() + "#" + method.getName() + "] .");
                 }
 
-                // TODO 从数据库获取此执行器名是否真实存在, 进行校验
-
                 // execute method
                 if (!(method.getParameterTypes().length == 1 && method.getParameterTypes()[0].isAssignableFrom(String.class))) {
                     throw new RuntimeException("xxl-job method-jobhandler param-classtype invalid, for[" + bean.getClass() + "#" + method.getName() + "] , " +
@@ -130,21 +138,6 @@ public class ExecutorJobManagerHandler {
                     } catch (NoSuchMethodException e) {
                         throw new RuntimeException("xxl-job method-jobhandler destroyMethod invalid, for[" + bean.getClass() + "#" + method.getName() + "] .");
                     }
-                }
-
-                try {
-                    Object invoke = method.invoke(bean, "demo");
-                    System.out.println(invoke);
-                    if (Objects.nonNull(initMethod)) {
-                        Object invoke1 = initMethod.invoke(bean);
-                        System.out.println(invoke1);
-                    }
-                    if (Objects.nonNull(destroyMethod)) {
-                        Object invoke1 = destroyMethod.invoke(bean);
-                        System.out.println(invoke1);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
                 }
 
                 // registry jobhandler

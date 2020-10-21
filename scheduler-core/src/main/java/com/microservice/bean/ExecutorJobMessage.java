@@ -21,6 +21,7 @@ public class ExecutorJobMessage implements Serializable {
     private String host;
     private String port;
     private LocalDateTime currentTime;
+    private String appName;
 
     private SchedulerConfigurationProperties properties;
 }

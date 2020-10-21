@@ -4,6 +4,7 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.base.Predicate;
 import com.microservice.bean.SchedulerConfigurationProperties;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.RequestHandler;
@@ -30,6 +31,7 @@ import java.util.List;
  */
 @Configuration
 @EnableSwagger2
+@ConditionalOnProperty(prefix = "microservice.scheduler", name = "swagger-enable", havingValue = "true")
 public class SwaggerConfig {
 
     /**

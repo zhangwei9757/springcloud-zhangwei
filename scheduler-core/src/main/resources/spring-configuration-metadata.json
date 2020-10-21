@@ -16,10 +16,31 @@
     },
     {
       "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": 10,
+      "name": "microservice.scheduler.cluster-actuator-status-scanning-cycle",
+      "description": "Unit second",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
       "defaultValue": "",
       "name": "microservice.scheduler.cluster-address",
       "description": "Cluster registered address, ip:port;ip:port...",
       "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": 1,
+      "name": "microservice.scheduler.cluster-cron-task-scanning-cycle",
+      "description": "Unit second",
+      "type": "java.lang.Long"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": 5,
+      "name": "microservice.scheduler.cluster-given-task-scanning-cycle",
+      "description": "Unit second",
+      "type": "java.lang.Long"
     },
     {
       "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
@@ -36,7 +57,7 @@
     },
     {
       "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
-      "defaultValue": 0,
+      "defaultValue": 15,
       "name": "microservice.scheduler.cluster-heartbeat-timeout",
       "description": "Unit second",
       "type": "java.lang.Long"
@@ -63,6 +84,12 @@
     },
     {
       "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": false,
+      "name": "microservice.scheduler.enable-chat-room",
+      "type": "java.lang.Boolean"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
       "name": "microservice.scheduler.register-name",
       "description": "Client registration name, cluster member registration name",
       "type": "java.lang.String"
@@ -85,6 +112,12 @@
       "defaultValue": "scheduler description",
       "name": "microservice.scheduler.swagger-description",
       "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",
+      "defaultValue": false,
+      "name": "microservice.scheduler.swagger-enable",
+      "type": "java.lang.Boolean"
     },
     {
       "sourceType": "com.microservice.bean.SchedulerConfigurationProperties",

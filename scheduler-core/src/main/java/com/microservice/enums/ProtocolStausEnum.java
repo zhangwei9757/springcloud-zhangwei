@@ -7,5 +7,9 @@ package com.microservice.enums;
  */
 public enum ProtocolStausEnum {
     registerRequest,
-    deregisterRequest;
+    deregisterRequest,
+    actuatorRequest,
+    callbackGivenStatusRequest,
+    registryCronTaskRequest,
+    registryGivenTaskRequest;
 }

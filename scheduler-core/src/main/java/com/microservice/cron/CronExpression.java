@@ -17,6 +17,8 @@
 
 package com.microservice.cron;
 
+import com.microservice.utils.TimeUtils;
+
 import java.io.Serializable;
 import java.text.ParseException;
 import java.time.LocalDate;
@@ -153,8 +155,23 @@ public final class CronExpression implements Serializable, Cloneable {
     }
 
     public boolean isSatisfiedBy(LocalDateTime dateTime) {
-        Date date = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
-        return isSatisfiedBy(date);
+        try {
+            Date date = Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant());
+            return isSatisfiedBy(date);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    public static void main(String[] args) throws Exception{
+        CronExpression cronExpression = new CronExpression("0/3 * * * * ?");
+        for (int i = 0; i < 60; i++) {
+            LocalDateTime now = LocalDateTime.now();
+            boolean satisfiedBy = cronExpression.isSatisfiedBy(now);
+            System.out.println(now + ":" +satisfiedBy);
+            Thread.sleep(1000);
+        }
+
     }
 
     public boolean isSatisfiedBy(LocalDate localDate) {

@@ -1,7 +1,7 @@
 package com.microservice.aop;
 
-import com.microservice.annotation.CacheLock;
-import com.microservice.annotation.CacheParam;
+import com.microservice.annotation.lock.CacheLock;
+import com.microservice.annotation.lock.CacheParam;
 import com.microservice.utils.Constants;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;

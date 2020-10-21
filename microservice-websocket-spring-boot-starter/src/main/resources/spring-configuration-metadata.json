@@ -2,44 +2,44 @@
   "hints": [],
   "groups": [
     {
-      "sourceType": "com.zhangwei.bean.WebsocketEndpointProperties",
+      "sourceType": "com.microservice.bean.WebsocketEndpointProperties",
       "name": "microservice.websocket",
-      "type": "com.zhangwei.bean.WebsocketEndpointProperties"
+      "type": "com.microservice.bean.WebsocketEndpointProperties"
     }
   ],
   "properties": [
     {
-      "sourceType": "com.zhangwei.bean.WebsocketEndpointProperties",
+      "sourceType": "com.microservice.bean.WebsocketEndpointProperties",
       "defaultValue": 3000,
       "name": "microservice.websocket.async-send-timeout",
       "type": "java.lang.Long"
     },
     {
-      "sourceType": "com.zhangwei.bean.WebsocketEndpointProperties",
+      "sourceType": "com.microservice.bean.WebsocketEndpointProperties",
       "defaultValue": 0,
       "name": "microservice.websocket.max-binary-message-buffer-size",
       "type": "java.lang.Integer"
     },
     {
-      "sourceType": "com.zhangwei.bean.WebsocketEndpointProperties",
+      "sourceType": "com.microservice.bean.WebsocketEndpointProperties",
       "defaultValue": 1800000,
       "name": "microservice.websocket.max-session-idle-timeout",
       "type": "java.lang.Long"
     },
     {
-      "sourceType": "com.zhangwei.bean.WebsocketEndpointProperties",
+      "sourceType": "com.microservice.bean.WebsocketEndpointProperties",
       "defaultValue": 0,
       "name": "microservice.websocket.max-text-message-buffer-size",
       "type": "java.lang.Integer"
     },
     {
-      "sourceType": "com.zhangwei.bean.WebsocketEndpointProperties",
+      "sourceType": "com.microservice.bean.WebsocketEndpointProperties",
       "defaultValue": "socket",
       "name": "microservice.websocket.websocket-endpoint",
       "type": "java.lang.String"
     },
     {
-      "sourceType": "com.zhangwei.bean.WebsocketEndpointProperties",
+      "sourceType": "com.microservice.bean.WebsocketEndpointProperties",
       "defaultValue": [
         "*"
       ],
@@ -47,13 +47,13 @@
       "type": "java.lang.String[]"
     },
     {
-      "sourceType": "com.zhangwei.bean.WebsocketEndpointProperties",
+      "sourceType": "com.microservice.bean.WebsocketEndpointProperties",
       "defaultValue": "socketJs",
       "name": "microservice.websocket.websocket-js-endpoint",
       "type": "java.lang.String"
     },
     {
-      "sourceType": "com.zhangwei.bean.WebsocketEndpointProperties",
+      "sourceType": "com.microservice.bean.WebsocketEndpointProperties",
       "defaultValue": [
         "*"
       ],

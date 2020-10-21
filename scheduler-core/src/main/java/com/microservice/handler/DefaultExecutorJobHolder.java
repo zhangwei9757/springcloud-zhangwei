@@ -14,19 +14,19 @@ import java.util.concurrent.ConcurrentMap;
 public class DefaultExecutorJobHolder {
 
     /**
-     * job handler repository，后续需要使用分布式
+     * job handler repository
      */
     private static ConcurrentMap<String, AbstractJobHandler> jobHandlerRepository = new ConcurrentHashMap<>();
 
     /**
-     * 注册执行器执行任务的方法，后续需要使用分布式
+     * 注册执行器执行任务的方法
      *
      * @param jobName
      * @param executorJobHandler
      * @return
      */
     public static AbstractJobHandler registExecutorJobHandler(String jobName, AbstractJobHandler executorJobHandler) {
-        log.info(">>>>>>>>>>> executor-job register executorJobHandler success, jobName:{}, executorJobHandler:{}", jobName, executorJobHandler);
+        log.info(">>> registExecutorJobHandler register @ExecutorJob successful, jobName:{}, executorJobHandler:{}", jobName, executorJobHandler);
         AbstractJobHandler jobHandler = jobHandlerRepository.put(jobName, executorJobHandler);
         jobHandlerRepository.forEach((k, v) -> {
             log.info(">>> jobName: {}, Methods: {}", k, v);

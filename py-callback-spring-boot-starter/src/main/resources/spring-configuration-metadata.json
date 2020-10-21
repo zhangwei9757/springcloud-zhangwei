@@ -2,9 +2,9 @@
   "hints": [],
   "groups": [
     {
-      "sourceType": "com.zhangwei.bean.PyCallbackProperties",
+      "sourceType": "com.microservice.bean.PyCallbackProperties",
       "name": "microservice.py",
-      "type": "com.zhangwei.bean.PyCallbackProperties"
+      "type": "com.microservice.bean.PyCallbackProperties"
     }
   ],
   "properties": []

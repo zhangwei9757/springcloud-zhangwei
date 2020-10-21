@@ -1,6 +1,6 @@
 package com.microservice.utils;
 
-import com.microservice.protocol.BaseProtocol;
+import com.microservice.client.BaseProtocol;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
