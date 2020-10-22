@@ -2,7 +2,8 @@
 SQLyog Ultimate v11.11 (64 bit)
 MySQL - 5.7.20-log : Database - scheduler
 *********************************************************************
-*/
+*/
+
 
 /*!40101 SET NAMES utf8 */;
 
@@ -28,10 +29,6 @@ CREATE TABLE `scheduler_registry` (
   PRIMARY KEY (`registry_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
-/*Data for the table `scheduler_registry` */
-
-insert  into `scheduler_registry`(`registry_id`,`registry_app_name`,`registry_desc`,`registry_create_time`) values (2,'scheduler-example-zhangwei','scheduler-example-zhangwei','2020-10-16 12:29:18'),(3,'scheduler-zhangwei-02','scheduler-zhangwei-02','2020-10-21 18:15:10'),(4,'scheduler-example-executor-dev2','scheduler-example-executor-dev2','2020-10-22 11:08:01');
-
 /*Table structure for table `scheduler_registry_detail` */
 
 DROP TABLE IF EXISTS `scheduler_registry_detail`;
@@ -50,10 +47,6 @@ CREATE TABLE `scheduler_registry_detail` (
   PRIMARY KEY (`register_detail_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
 
-/*Data for the table `scheduler_registry_detail` */
-
-insert  into `scheduler_registry_detail`(`register_detail_id`,`register_detail_registry_id`,`register_detail_app_name`,`register_detail_ip`,`register_detail_port`,`register_detail_sort`,`register_detail_status`,`register_detail_online_time`,`register_detail_offline_time`,`register_detail_create_time`) values (7,2,'scheduler-example-zhangwei','192.168.40.1','8889',2,'0','2020-10-21 20:14:15','2020-10-21 22:00:33','2020-10-16 19:28:30'),(9,2,'scheduler-example-zhangwei','192.168.40.1','8888',1,'0','2020-10-21 18:58:21','2020-10-21 20:14:29','2020-10-16 19:46:17'),(14,NULL,'scheduler-example-executor-dev2','192.168.40.1','8889',1,'1','2020-10-22 11:08:01',NULL,'2020-10-22 11:08:01'),(15,4,'scheduler-example-executor-dev2','192.168.40.1','8889',1,'1','2020-10-22 11:09:19',NULL,'2020-10-22 11:09:19');
-
 /*Table structure for table `scheduler_task_cron` */
 
 DROP TABLE IF EXISTS `scheduler_task_cron`;
@@ -71,10 +64,6 @@ CREATE TABLE `scheduler_task_cron` (
   `task_cron_write_log` char(1) DEFAULT '0' COMMENT '0: 不写日志 1：写日志',
   PRIMARY KEY (`task_cron_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4;
-
-/*Data for the table `scheduler_task_cron` */
-
-insert  into `scheduler_task_cron`(`task_cron_id`,`task_cron_registry_detail_id`,`task_cron_app_name`,`task_cron_desc`,`task_cron_job_handler`,`task_cron_param`,`task_cron_expression`,`task_cron_status`,`task_cron_create_time`,`task_cron_write_log`) values (1,7,'scheduler-example-zhangwei','测试任务','test',NULL,'0/8 * * * * ?','0','2020-10-16 14:44:50','0');
 
 /*Table structure for table `scheduler_task_given` */
 
@@ -100,10 +89,6 @@ CREATE TABLE `scheduler_task_given` (
   PRIMARY KEY (`task_given_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
 
-/*Data for the table `scheduler_task_given` */
-
-insert  into `scheduler_task_given`(`task_given_id`,`task_given_registry_detail_id`,`task_given_app_name`,`task_given_desc`,`task_given_job_handler`,`task_given_param`,`task_given_time`,`task_given_delayed`,`task_given_status`,`task_given_execute_status`,`task_given_last_execute_time`,`task_given_retry_count`,`task_given_retry_delayed`,`task_given_retry_max`,`task_given_create_time`,`task_given_write_log`) values (3,7,'scheduler-example-zhangwei','测试任务22222','test','nihao','2020-10-19 11:05:51','0','1','3','2020-10-21 13:20:42',3,3,3,'2020-10-19 11:05:59','1');
-
 /*Table structure for table `scheduler_task_log` */
 
 DROP TABLE IF EXISTS `scheduler_task_log`;
@@ -126,10 +111,6 @@ CREATE TABLE `scheduler_task_log` (
   `log_create_time` datetime DEFAULT NULL COMMENT '日志生成时间',
   PRIMARY KEY (`log_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=48 DEFAULT CHARSET=utf8mb4;
-
-/*Data for the table `scheduler_task_log` */
-
-insert  into `scheduler_task_log`(`log_id`,`log_registry_detail_id`,`log_task_id`,`log_task_type`,`log_executor_address`,`log_executor_handler`,`log_executor_param`,`log_trigger_time`,`log_trigger_code`,`log_trigger_msg`,`log_handle_time`,`log_handle_code`,`log_handle_msg`,`log_alarm_status`,`log_create_time`) values (36,7,1,'0','192.168.40.1:8889','test',NULL,'2020-10-20 12:13:55','200',NULL,'2020-10-20 12:13:55','200',NULL,'0','2020-10-20 12:13:59'),(37,7,1,'0','192.168.40.1:8889','test',NULL,'2020-10-20 12:13:58','200',NULL,'2020-10-20 12:13:58','200',NULL,'0','2020-10-20 12:13:58'),(38,7,1,'0','192.168.40.1:8889','test',NULL,'2020-10-20 12:14:01','200',NULL,'2020-10-20 12:14:01','200',NULL,'0','2020-10-20 12:14:01'),(39,7,1,'0','192.168.40.1:8889','test2',NULL,'2020-10-20 12:14:04','200',NULL,'2020-10-20 12:14:04','200',NULL,'0','2020-10-20 12:14:13'),(40,7,1,'0','192.168.40.1:8889','test',NULL,'2020-10-20 12:14:07','200',NULL,'2020-10-20 12:14:07','200',NULL,'0','2020-10-20 12:14:07'),(41,7,1,'0','192.168.40.1:8889','test2',NULL,'2020-10-20 12:14:12','200',NULL,'2020-10-20 12:14:12','200',NULL,'0','2020-10-20 12:14:12'),(42,7,3,'1','192.168.40.1:8889','test','nihao','2020-10-20 12:32:45','200',NULL,'2020-10-20 12:32:45','400','重试次数已达上限','0','2020-10-20 12:32:45'),(43,7,1,'0','192.168.40.1:8889','test',NULL,'2020-10-21 13:16:49','200',NULL,'2020-10-21 13:16:49','200',NULL,'0','2020-10-21 13:16:49'),(44,7,1,'0','192.168.40.1:8889','test',NULL,'2020-10-21 13:16:57','200',NULL,'2020-10-21 13:16:57','200',NULL,'0','2020-10-21 13:16:57'),(45,7,1,'0','192.168.40.1:8889','test',NULL,'2020-10-21 13:17:01','200',NULL,'2020-10-21 13:17:01','200',NULL,'0','2020-10-21 13:17:01'),(46,7,3,'1','192.168.40.1:8889','test','nihao','2020-10-21 13:19:42','200',NULL,'2020-10-21 13:19:42','400','重试次数已达上限','0','2020-10-21 13:19:42'),(47,7,3,'1','192.168.40.1:8889','test','nihao','2020-10-21 13:20:42','200',NULL,'2020-10-21 13:20:42','200',NULL,'0','2020-10-21 13:20:49');
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
