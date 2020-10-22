@@ -49,6 +49,11 @@ public class SchedulerTaskCron extends Model<SchedulerTaskCron> {
     private String taskCronJobHandler;
 
     /**
+     * 参数
+     */
+    private String taskCronParam;
+
+    /**
      * cron表达式
      */
     private String taskCronExpression;

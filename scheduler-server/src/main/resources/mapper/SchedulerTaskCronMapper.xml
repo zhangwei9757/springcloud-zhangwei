@@ -9,6 +9,7 @@
         <result column="task_cron_app_name" property="taskCronAppName" />
         <result column="task_cron_desc" property="taskCronDesc" />
         <result column="task_cron_job_handler" property="taskCronJobHandler" />
+        <result column="task_cron_param" property="taskCronParam" />
         <result column="task_cron_expression" property="taskCronExpression" />
         <result column="task_cron_status" property="taskCronStatus" />
         <result column="task_cron_create_time" property="taskCronCreateTime" />

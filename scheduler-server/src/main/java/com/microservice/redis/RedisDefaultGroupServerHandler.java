@@ -726,6 +726,7 @@ public class RedisDefaultGroupServerHandler {
                             .setAppName(appName)
                             .setJobHandler(f.getTaskCronJobHandler())
                             .setSchedulerCron(f.getTaskCronExpression())
+                            .setJobHandlerParam(f.getTaskCronParam())
                             .setTaskCronDto(f)
                     ;
                     String json = JsonUtils.toJson(taskMessage);

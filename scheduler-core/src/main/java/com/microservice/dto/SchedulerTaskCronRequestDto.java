@@ -45,6 +45,11 @@ public class SchedulerTaskCronRequestDto extends BasePage implements Serializabl
     private String taskCronJobHandler;
 
     /**
+     * 参数
+     */
+    private String taskCronParam;
+
+    /**
      * cron表达式
      */
     private String taskCronExpression;

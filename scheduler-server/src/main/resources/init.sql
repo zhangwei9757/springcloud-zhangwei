@@ -26,11 +26,11 @@ CREATE TABLE `scheduler_registry` (
   `registry_desc` varchar(255) DEFAULT NULL COMMENT '中文描述',
   `registry_create_time` datetime DEFAULT NULL COMMENT '自动注册时间',
   PRIMARY KEY (`registry_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `scheduler_registry` */
 
-insert  into `scheduler_registry`(`registry_id`,`registry_app_name`,`registry_desc`,`registry_create_time`) values (2,'scheduler-example-zhangwei','scheduler-example-zhangwei','2020-10-16 12:29:18'),(3,'scheduler-zhangwei-02','scheduler-zhangwei-02','2020-10-21 18:15:10');
+insert  into `scheduler_registry`(`registry_id`,`registry_app_name`,`registry_desc`,`registry_create_time`) values (2,'scheduler-example-zhangwei','scheduler-example-zhangwei','2020-10-16 12:29:18'),(3,'scheduler-zhangwei-02','scheduler-zhangwei-02','2020-10-21 18:15:10'),(4,'scheduler-example-executor-dev2','scheduler-example-executor-dev2','2020-10-22 11:08:01');
 
 /*Table structure for table `scheduler_registry_detail` */
 
@@ -48,11 +48,11 @@ CREATE TABLE `scheduler_registry_detail` (
   `register_detail_offline_time` datetime DEFAULT NULL COMMENT '离线时间',
   `register_detail_create_time` datetime DEFAULT NULL COMMENT '创建时间',
   PRIMARY KEY (`register_detail_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4;
 
 /*Data for the table `scheduler_registry_detail` */
 
-insert  into `scheduler_registry_detail`(`register_detail_id`,`register_detail_registry_id`,`register_detail_app_name`,`register_detail_ip`,`register_detail_port`,`register_detail_sort`,`register_detail_status`,`register_detail_online_time`,`register_detail_offline_time`,`register_detail_create_time`) values (7,2,'scheduler-example-zhangwei','192.168.40.1','8889',2,'0','2020-10-21 15:43:52','2020-10-21 18:09:41','2020-10-16 19:28:30'),(9,2,'scheduler-example-zhangwei','192.168.40.1','8888',1,'0','2020-10-20 21:57:27','2020-10-20 21:59:32','2020-10-16 19:46:17'),(13,NULL,'scheduler-zhangwei-02','192.168.40.1','8001',1,'1','2020-10-21 18:15:10',NULL,'2020-10-21 18:15:10');
+insert  into `scheduler_registry_detail`(`register_detail_id`,`register_detail_registry_id`,`register_detail_app_name`,`register_detail_ip`,`register_detail_port`,`register_detail_sort`,`register_detail_status`,`register_detail_online_time`,`register_detail_offline_time`,`register_detail_create_time`) values (7,2,'scheduler-example-zhangwei','192.168.40.1','8889',2,'0','2020-10-21 20:14:15','2020-10-21 22:00:33','2020-10-16 19:28:30'),(9,2,'scheduler-example-zhangwei','192.168.40.1','8888',1,'0','2020-10-21 18:58:21','2020-10-21 20:14:29','2020-10-16 19:46:17'),(14,NULL,'scheduler-example-executor-dev2','192.168.40.1','8889',1,'1','2020-10-22 11:08:01',NULL,'2020-10-22 11:08:01'),(15,4,'scheduler-example-executor-dev2','192.168.40.1','8889',1,'1','2020-10-22 11:09:19',NULL,'2020-10-22 11:09:19');
 
 /*Table structure for table `scheduler_task_cron` */
 
@@ -64,6 +64,7 @@ CREATE TABLE `scheduler_task_cron` (
   `task_cron_app_name` varchar(255) DEFAULT NULL COMMENT 'registry表app_name',
   `task_cron_desc` varchar(255) DEFAULT NULL COMMENT '中文描述',
   `task_cron_job_handler` varchar(255) DEFAULT NULL COMMENT '任务处理方法名',
+  `task_cron_param` text COMMENT '参数',
   `task_cron_expression` varchar(255) DEFAULT NULL COMMENT 'cron表达式',
   `task_cron_status` char(1) DEFAULT '0' COMMENT '0: stop 1: running',
   `task_cron_create_time` datetime DEFAULT NULL COMMENT '任务生成时间',
@@ -73,7 +74,7 @@ CREATE TABLE `scheduler_task_cron` (
 
 /*Data for the table `scheduler_task_cron` */
 
-insert  into `scheduler_task_cron`(`task_cron_id`,`task_cron_registry_detail_id`,`task_cron_app_name`,`task_cron_desc`,`task_cron_job_handler`,`task_cron_expression`,`task_cron_status`,`task_cron_create_time`,`task_cron_write_log`) values (1,7,'scheduler-example-zhangwei','测试任务','test','0/8 * * * * ?','0','2020-10-16 14:44:50','0');
+insert  into `scheduler_task_cron`(`task_cron_id`,`task_cron_registry_detail_id`,`task_cron_app_name`,`task_cron_desc`,`task_cron_job_handler`,`task_cron_param`,`task_cron_expression`,`task_cron_status`,`task_cron_create_time`,`task_cron_write_log`) values (1,7,'scheduler-example-zhangwei','测试任务','test',NULL,'0/8 * * * * ?','0','2020-10-16 14:44:50','0');
 
 /*Table structure for table `scheduler_task_given` */
 
