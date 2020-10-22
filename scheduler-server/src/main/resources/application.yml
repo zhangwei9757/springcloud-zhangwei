@@ -7,8 +7,26 @@ server:
   port: 8000
 spring:
   profiles: dev1
+  cloud:
+    consul:
+      host: 127.0.0.1
+      port: 8500
+      discovery:
+        enabled: true
+        #        hostname: 10.29.23.178
+        #        instance-id: ${spring.application.name}:${spring.cloud.consul.discovery.hostname}:${server.port}
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+        service-name: ${spring.application.name}
+        health-check-path: /actuator/health
+        #        port: ${server.port} #${SERVER_PORT:${server.port}}
+        healthCheckInterval: 15s
+        health-check-critical-timeout: 60s
+        tags: uat
+        heartbeat:
+          enabled: true
   application:
-    name: scheduler-zhangwei
+    name: scheduler-server-dev1
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/scheduler?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC
@@ -110,8 +128,26 @@ server:
   port: 8001
 spring:
   profiles: dev2
+  cloud:
+    consul:
+      host: 127.0.0.1
+      port: 8500
+      discovery:
+        enabled: true
+        #        hostname: 10.29.23.178
+        #        instance-id: ${spring.application.name}:${spring.cloud.consul.discovery.hostname}:${server.port}
+        prefer-ip-address: true
+        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+        service-name: ${spring.application.name}
+        health-check-path: /actuator/health
+        #        port: ${server.port} #${SERVER_PORT:${server.port}}
+        healthCheckInterval: 15s
+        health-check-critical-timeout: 60s
+        tags: uat
+        heartbeat:
+          enabled: true
   application:
-    name: scheduler-zhangwei
+    name: scheduler-server-dev2
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     url: jdbc:mysql://localhost:3306/scheduler?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC

@@ -1,5 +1,6 @@
 package com.microservice.server;
 
+import com.microservice.bean.RedisMessage;
 import com.microservice.bean.SchedulerConfigurationProperties;
 import com.microservice.dto.ResponseDto;
 import com.microservice.dto.SchedulerRegistryDetailRequestDto;
@@ -18,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author zw
@@ -32,7 +34,7 @@ public class SchedulerActuatorScanningHandler {
     private ISchedulerRegistryDetailService registryDetailService;
 
     @Autowired
-    private SchedulerConfigurationProperties properties;
+    private ExecutorGroupServer groupServer;
 
     /**
      * 自动扫描执行器的状态, 状态未改变不修改
@@ -40,11 +42,22 @@ public class SchedulerActuatorScanningHandler {
      * @return
      */
     public boolean autoActuatorScanning() {
-        List<SchedulerRegistryDetailRequestDto> registryDetailList = registryDetailService.allActuators();
+        List<SchedulerRegistryDetailRequestDto> list = registryDetailService.allActuators();
+
+        if (CollectionUtils.isEmpty(list)) {
+            return true;
+        }
+        RedisMessage leader = groupServer.getLeader();
+        String healthIpPort = leader.getHealthIpPort();
+        // 如果自身是Leader, 如果有脏数据，不用扫描自己
+        List<SchedulerRegistryDetailRequestDto> registryDetailList = list.parallelStream()
+                .filter(f -> !Objects.deepEquals(healthIpPort, f.getRegisterDetailIp() + ":" + f.getRegisterDetailPort()))
+                .collect(Collectors.toList());
 
         if (CollectionUtils.isEmpty(registryDetailList)) {
             return true;
         }
+
         Map<String, Boolean> healthCheckMap = new HashMap<>(registryDetailList.size());
         registryDetailList.parallelStream().forEach(f -> {
             String ipPort = f.getRegisterDetailIp() + ":" + f.getRegisterDetailPort();

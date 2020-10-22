@@ -261,10 +261,11 @@ public class RedisDefaultGroupServerHandler {
 
         LocalDateTime now = LocalDateTime.now();
 
+
         List<SchedulerServerRegister> clusterList = defaultClientHandler.findClusterList();
 
-        // 1. 如果不存在，自动同步注册列表数据
         if (CollectionUtils.isEmpty(clusterList)) {
+            // 1. 如果不存在，自动同步注册列表数据
             clusterList = properties.findServerAddress()
                     .parallelStream()
                     .map(m -> new SchedulerServerRegister()
@@ -309,6 +310,8 @@ public class RedisDefaultGroupServerHandler {
             }
         });
 
+        Set<String> serverAddress = properties.findServerAddress();
+
         // 4. 使用投票信息，自动同步 注册成员信息
         Set<SchedulerServerRegister> clusterMembers = defaultClientHandler.findClusterMembers(defaultClientHandler.findClusterPrefKey());
         clusterMembers.parallelStream()
@@ -326,13 +329,32 @@ public class RedisDefaultGroupServerHandler {
                                 .setStatus(HostStatusEnum.UP.getType());
                     }
 
-                    if (destroy) {
-                        // 表示自己要消毁
-                        register.setDeRegisterTime(now);
-                        register.setStatus(HostStatusEnum.DOWN.getType());
+                    String ipMappingPort = register.ipMappingPort();
+                    if (!serverAddress.contains(ipMappingPort)) {
+                        // 如果要删除的包括这个，那么此条信息要删除掉, vote , clusterMember二个信息
+//                        String memberKey = message.getClusterMemberKey();
+//                        String voteKey = message.getVoteKey();
+//                        defaultClientHandler.removeByKey(memberKey);
+//                        defaultClientHandler.removeByKey(voteKey);
+                    } else {
+                        // 如果不是要直接删除的信息，才有资格进行更新
+                        if (destroy) {
+                            // 表示自己要消毁
+                            register.setDeRegisterTime(now);
+                            register.setStatus(HostStatusEnum.DOWN.getType());
+                        }
+                        defaultClientHandler.updateMessageByKey(message.getClusterMemberKey(), JsonUtils.toJson(register));
                     }
-                    defaultClientHandler.updateMessageByKey(message.getClusterMemberKey(), JsonUtils.toJson(register));
                 });
+
+        List<SchedulerServerRegister> clusterListTemp = clusterList;
+        clusterMembers.parallelStream().forEach(f -> {
+            SchedulerServerRegister register = clusterListTemp.parallelStream().filter(temp -> Objects.deepEquals(f.ipMappingPort(), temp.ipMappingPort()))
+                    .findFirst().orElseGet(() -> null);
+            if (Objects.isNull(register)) {
+                clusterListTemp.add(f);
+            }
+        });
 
         String josn = JsonUtils.toJson(clusterList);
         redisUtil.set(message.getClusterListKey(), josn);

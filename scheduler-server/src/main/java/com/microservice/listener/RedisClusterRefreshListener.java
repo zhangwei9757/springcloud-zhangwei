@@ -55,7 +55,7 @@ public class RedisClusterRefreshListener implements MessageListener {
         defaultGroupServerHandler = ApplicationContextUtil.getBean(RedisDefaultGroupServerHandler.class);
         properties = ApplicationContextUtil.getBean(SchedulerConfigurationProperties.class);
         groupServer = ApplicationContextUtil.getBean(ExecutorGroupServer.class);
-        executor = ApplicationContextUtil.getBean(Executor.class);
+        executor = ApplicationContextUtil.APPLICATION_CONTEXT.getBean("executor", Executor.class);
         taskCronService = ApplicationContextUtil.getBean(ISchedulerTaskCronService.class);
         taskGivenService = ApplicationContextUtil.getBean(ISchedulerTaskGivenService.class);
         actuatorScanningHandler = ApplicationContextUtil.getBean(SchedulerActuatorScanningHandler.class);
