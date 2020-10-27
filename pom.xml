@@ -37,6 +37,8 @@
         <module>scheduler-core</module>
         <module>scheduler-server</module>
         <module>scheduler-example-executor</module>
+
+        <module>baidu-ocr</module>
     </modules>
 
     <dependencyManagement>
