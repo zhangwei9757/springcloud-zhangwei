@@ -7,5 +7,12 @@
       "type": "com.microservice.bean.PyCallbackProperties"
     }
   ],
-  "properties": []
+  "properties": [
+    {
+      "sourceType": "com.microservice.bean.PyCallbackProperties",
+      "defaultValue": "http:\/\/localhost:8080",
+      "name": "microservice.py.callback-url",
+      "type": "java.lang.String"
+    }
+  ]
 }
