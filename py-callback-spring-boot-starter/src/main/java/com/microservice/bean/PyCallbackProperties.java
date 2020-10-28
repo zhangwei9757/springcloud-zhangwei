@@ -15,7 +15,7 @@ import java.util.Objects;
 @ConditionalOnProperty(prefix = "microservice.py", value = "enabled", havingValue = "true")
 public class PyCallbackProperties {
 
-    private String callbackUrl = "http://localhost:8080/callback/handle";
+    private String callbackUrl = "http://localhost:8080";
 
     public PyCallbackProperties() {
     }

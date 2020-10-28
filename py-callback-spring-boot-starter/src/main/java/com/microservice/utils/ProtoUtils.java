@@ -2,10 +2,17 @@ package com.microservice.utils;
 
 import com.microservice.protocol.BaseProtocol;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.RandomUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.cloud.client.ServiceInstance;
+import org.springframework.cloud.consul.discovery.ConsulDiscoveryClient;
 import org.springframework.context.ApplicationContext;
+import org.springframework.util.CollectionUtils;
 
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author zhangwei
@@ -14,6 +21,15 @@ import java.util.Objects;
  */
 @Slf4j
 public class ProtoUtils {
+
+    /**
+     * 回调根路径
+     */
+    public static final String CALL_BACK_ROOT = "/callback";
+    /**
+     * 回调根路径下处理路径
+     */
+    public static final String CALL_BACK_HANDLER = "/handle";
 
     /**
      * 协议名获取协议
@@ -27,7 +43,7 @@ public class ProtoUtils {
                 return null;
             }
 
-            if (type.length() <=0) {
+            if (type.length() <= 0) {
                 return null;
             }
 
@@ -54,14 +70,49 @@ public class ProtoUtils {
      * @return
      */
     public static BaseProtocol protocol(String type, ApplicationContext applicationContext) {
-        Object bean = applicationContext.getBean(protoToClass(type));
+        String protoToClass = protoToClass(type);
 
         // 1.协议不存在
-        if (Objects.isNull(bean)) {
+        if (StringUtils.isBlank(protoToClass)) {
             log.error(">>> 协议: {}, 不存在", type);
+            return null;
         }
+
+        Object bean = applicationContext.getBean(protoToClass);
+
 
         // 2.协议处理
         return (BaseProtocol) bean;
+    }
+
+    /**
+     * 查询回调处理路径
+     *
+     * @return
+     */
+    public static String findCallBackUrl() {
+        return CALL_BACK_ROOT + CALL_BACK_HANDLER;
+    }
+
+    /**
+     * 通过 Consul注册获取随便一台服务器服务路径，通过指定路径
+     *
+     * @param applicationContext
+     * @return
+     */
+    public static String findHostByServiceName(ApplicationContext applicationContext) {
+        ConsulDiscoveryClient consulDiscoveryClient = applicationContext.getBean(ConsulDiscoveryClient.class);
+        List<ServiceInstance> allInstances = consulDiscoveryClient.getAllInstances();
+        if (CollectionUtils.isEmpty(allInstances)) {
+            throw new RuntimeException("--->>> Consul Registration list is empty!");
+        }
+
+        List<String> allowIps = allInstances.parallelStream()
+                .map(ServiceInstance::getHost)
+                .distinct()
+                .collect(Collectors.toList());
+
+        int randomInt = RandomUtils.nextInt(0, allowIps.size() - 1);
+        return allowIps.get(randomInt);
     }
 }
