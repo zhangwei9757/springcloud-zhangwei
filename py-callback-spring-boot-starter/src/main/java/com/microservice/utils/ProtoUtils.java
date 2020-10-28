@@ -100,7 +100,14 @@ public class ProtoUtils {
      * @param applicationContext
      * @return
      */
-    public static String findHostByServiceName(ApplicationContext applicationContext) {
+    public static String findHostByServiceName(ApplicationContext applicationContext, String serviceId) {
+        if (Objects.isNull(applicationContext) || StringUtils.isBlank(serviceId)) {
+            throw new RuntimeException("--->>> ApplicationContext is empty!");
+        }
+
+        if (StringUtils.isBlank(serviceId)) {
+            throw new RuntimeException("--->>> Consul serviceId is empty!");
+        }
         ConsulDiscoveryClient consulDiscoveryClient = applicationContext.getBean(ConsulDiscoveryClient.class);
         List<ServiceInstance> allInstances = consulDiscoveryClient.getAllInstances();
         if (CollectionUtils.isEmpty(allInstances)) {
@@ -108,6 +115,7 @@ public class ProtoUtils {
         }
 
         List<String> allowIps = allInstances.parallelStream()
+                .filter(f -> Objects.deepEquals(f.getServiceId(), serviceId))
                 .map(ServiceInstance::getHost)
                 .distinct()
                 .collect(Collectors.toList());
