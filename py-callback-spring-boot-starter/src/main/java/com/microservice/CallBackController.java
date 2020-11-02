@@ -1,4 +1,4 @@
-package com.microservice.controller;
+package com.microservice;
 
 import com.microservice.dto.FlaskCallBackDto;
 import com.microservice.protocol.BaseProtocol;

@@ -146,9 +146,12 @@ public class RegisterRequest extends BaseProtocol {
                 throw new SchedulerCoreException(ErrCode.REGISTER_FAIL);
             }
 
+            List<SchedulerRegistryRequestDto> list = registryService.findRegistryByAppName(registry);
+            SchedulerRegistryRequestDto registryRequestDto = list.get(0);
+
             SchedulerRegistryDetailRequestDto registryDetailRequest = new SchedulerRegistryDetailRequestDto();
             registryDetailRequest.setRegisterDetailAppName(registerName)
-                    .setRegisterDetailRegistryId(registry.getRegistryId())
+                    .setRegisterDetailRegistryId(registryRequestDto.getRegistryId())
                     .setRegisterDetailIp(host)
                     .setRegisterDetailPort(port)
                     .setRegisterDetailSort(1)
