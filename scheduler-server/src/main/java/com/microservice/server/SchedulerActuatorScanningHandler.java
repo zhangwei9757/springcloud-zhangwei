@@ -1,9 +1,9 @@
 package com.microservice.server;
 
 import com.microservice.bean.RedisMessage;
-import com.microservice.bean.SchedulerConfigurationProperties;
 import com.microservice.dto.ResponseDto;
 import com.microservice.dto.SchedulerRegistryDetailRequestDto;
+import com.microservice.redis.RedisDefaultClientHandler;
 import com.microservice.service.ISchedulerRegistryDetailService;
 import com.microservice.utils.Constants;
 import com.microservice.utils.RestTemplateUtils;
@@ -35,6 +35,9 @@ public class SchedulerActuatorScanningHandler {
 
     @Autowired
     private ExecutorGroupServer groupServer;
+
+    @Autowired
+    private RedisDefaultClientHandler defaultClientHandler;
 
     /**
      * 自动扫描执行器的状态, 状态未改变不修改
@@ -129,5 +132,26 @@ public class SchedulerActuatorScanningHandler {
             }
         });
         return false;
+    }
+
+    /**
+     * 解析 Leader 的状态
+     * @return
+     */
+    public boolean leaderWebStatus() {
+        RedisMessage leader = defaultClientHandler.findLeader();
+        if (Objects.isNull(leader)) {
+            return false;
+        }
+
+        try {
+            String url = leader.getHealthUrl();
+            ResponseEntity<ResponseDto> responseEntity = RestTemplateUtils.get(url, ResponseDto.class);
+            ResponseDto body = responseEntity.getBody();
+            int code = body.getCode();
+            return Objects.deepEquals(code, HttpStatus.OK.value());
+        } catch (Exception e) {
+            return false;
+        }
     }
 }
