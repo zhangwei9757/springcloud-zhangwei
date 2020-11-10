@@ -73,7 +73,6 @@ public class AutoOnLineOffLineController {
     public ResponseDto actuatorHealthCheckUrl() {
         ApplicationContext applicationContext = ApplicationContextUtil.APPLICATION_CONTEXT;
         ExecutorClient client = applicationContext.getBean(ExecutorClient.class);
-        client.retries = Integer.MAX_VALUE;
         Channel channel = client.getChannel();
         Channel flush = channel.flush();
         boolean active = flush.isActive();
