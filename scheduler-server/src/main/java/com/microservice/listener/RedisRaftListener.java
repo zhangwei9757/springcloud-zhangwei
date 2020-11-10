@@ -6,6 +6,7 @@ import com.microservice.enums.RaftStatusEnum;
 import com.microservice.redis.RedisDefaultClientHandler;
 import com.microservice.redis.RedisDefaultGroupServerHandler;
 import com.microservice.server.ExecutorGroupServer;
+import com.microservice.server.SchedulerActuatorScanningHandler;
 import com.microservice.utils.ApplicationContextUtil;
 import com.microservice.utils.JsonUtils;
 import com.microservice.utils.RandomUtils;
@@ -39,6 +40,7 @@ public class RedisRaftListener implements MessageListener {
     private RedisDefaultGroupServerHandler defaultGroupServerHandler;
     private SchedulerConfigurationProperties properties;
     private ExecutorGroupServer groupServer;
+    private SchedulerActuatorScanningHandler actuatorScanningHandler;
     private ScheduledFuture<?> heartbeatSchedule;
     private boolean directConnectLeader = true;
 
@@ -48,6 +50,7 @@ public class RedisRaftListener implements MessageListener {
         defaultGroupServerHandler = ApplicationContextUtil.getBean(RedisDefaultGroupServerHandler.class);
         properties = ApplicationContextUtil.getBean(SchedulerConfigurationProperties.class);
         groupServer = ApplicationContextUtil.getBean(ExecutorGroupServer.class);
+        actuatorScanningHandler = ApplicationContextUtil.getBean(SchedulerActuatorScanningHandler.class);
 
         String memberMessage = new String(message.getBody());
         RedisMessage member = JsonUtils.fromJson(memberMessage, RedisMessage.class);
@@ -87,6 +90,11 @@ public class RedisRaftListener implements MessageListener {
 
             // 2.1 如果获取到，表示已选举出leader ,保持集群心跳即可
             if (Objects.nonNull(leader)) {
+                boolean leaderWebStatus = actuatorScanningHandler.leaderWebStatus();
+                if (!leaderWebStatus) {
+                    defaultGroupServerHandler.leaderOffLine();
+                }
+
                 groupServer.setLeader(leader);
                 boolean deepEquals = Objects.deepEquals(leader.ipMappingPort(), currentServer.ipMappingPort());
                 currentServer.setCurrentRaftStatus(deepEquals ? RaftStatusEnum.LEADER : RaftStatusEnum.FOLLOWER);

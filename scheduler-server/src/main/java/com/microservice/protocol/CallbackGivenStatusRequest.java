@@ -95,6 +95,7 @@ public class CallbackGivenStatusRequest extends BaseProtocol {
                 dto.setTaskGivenId(taskGivenId);
                 dto.setTaskGivenExecuteStatus(Constants.TASK_WAIT_RETRY);
                 dto.setTaskGivenLastExecuteTime(LocalDateTime.now());
+                dto.setTaskGivenRetryCount(Objects.isNull(retryCount) ? 1 : retryCount + 1);
 
                 boolean update = taskGivenService.updateGivenExecuteStatus(dto);
                 log.info(">>> 服务器接收到指定时间任务回写执行状态事件, 回写结果: {}", update);
