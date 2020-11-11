@@ -9,3 +9,5 @@ function SokcetMessageHandler(){
 
 var handler = new SokcetMessageHandler();
 handler.dispatch("alert", "123")
+
+setTimeout()
