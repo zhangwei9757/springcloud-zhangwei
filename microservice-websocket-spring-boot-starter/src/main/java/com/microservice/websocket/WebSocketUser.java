@@ -1,6 +1,9 @@
 package com.microservice.websocket;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.microservice.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.Closeable;
@@ -106,6 +109,21 @@ public class WebSocketUser implements Closeable {
      * @param proto
      */
     public boolean send(BaseProtocol proto) {
+        try {
+            String data = JsonUtils.marshal(proto);
+            if (socketSession == null) {
+                return false;
+            }
+            synchronized (sendMonitor) {
+                socketSession.sendMessage(new TextMessage(proto.getProtoType() + "|" + data));
+            }
+        } catch (JsonProcessingException e) {
+            log.error("send protocol JsonProcessingException:" + e.getMessage());
+            return false;
+        } catch (Exception ex) {
+            log.error("send protocol error:" + ex.getMessage());
+            return false;
+        }
         return true;
     }
 
@@ -117,6 +135,18 @@ public class WebSocketUser implements Closeable {
      * @return
      */
     public boolean send(String type, String data) {
+        try {
+            if (socketSession == null) {
+                return false;
+            }
+
+            synchronized (sendMonitor) {
+                socketSession.sendMessage(new TextMessage(type + "|" + data));
+            }
+        } catch (Exception ex) {
+            log.error("send protocol error:", ex);
+            return false;
+        }
         return true;
     }
 }

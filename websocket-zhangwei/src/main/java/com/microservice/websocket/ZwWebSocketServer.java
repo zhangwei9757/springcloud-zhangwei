@@ -18,7 +18,7 @@ import java.util.Arrays;
  */
 @Service
 @Slf4j
-public class WebSocketServer2 extends WebSocketServer {
+public class ZwWebSocketServer extends WebSocketServer {
 
     @Autowired
     private ApplicationContext applicationContext;
