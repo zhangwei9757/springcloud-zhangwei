@@ -1,5 +1,6 @@
 package com.microservice.websocket;
 
+import com.microservice.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.socket.*;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
@@ -38,6 +39,11 @@ public class WebSocketHandler extends TextWebSocketHandler {
 
             int pos = payload.indexOf("|");
             if (pos == -1 || pos == payload.length() - 1) {
+                NotifyError errorInfo = new NotifyError();
+                errorInfo.type = "unknown";
+                errorInfo.result = "未知协议";
+                String data = JsonUtils.marshal(errorInfo);
+                server.onError(session, data);
                 return;
             }
 

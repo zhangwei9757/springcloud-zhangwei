@@ -1,13 +1,10 @@
 package com.microservice.websocket;
 
-import org.springframework.stereotype.Component;
-
 /**
  * @author zhangwei
  * @date 2020-08-16
  * <p> 协议统一错误回复
  */
-@Component
 public class NotifyError extends BaseProtocol {
 
     public String type;

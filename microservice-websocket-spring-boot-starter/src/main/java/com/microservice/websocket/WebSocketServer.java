@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.CollectionUtils;
+import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.util.*;
 
@@ -89,11 +91,17 @@ public class WebSocketServer {
      * @param ex
      */
     protected void onError(WebSocketSession session, String ex) {
-        WebSocketUser webSocketUser = (WebSocketUser) session.getAttributes().get(USER_ATTR);
-        if (webSocketUser != null) {
-            webSocketUser.close();
+        try {
+            session.sendMessage(new TextMessage("unknown|" + ex));
             log.info(">>> onError reason: {}", ex);
+        } catch (Exception e) {
+            log.error(">>> onError sendMessage failed reason: {}", e.getLocalizedMessage(), e);
         }
+//        WebSocketUser webSocketUser = (WebSocketUser) session.getAttributes().get(USER_ATTR);
+//        if (webSocketUser != null) {
+//            webSocketUser.close();
+//            log.info(">>> onError reason: {}", ex);
+//        }
     }
 
     /**
