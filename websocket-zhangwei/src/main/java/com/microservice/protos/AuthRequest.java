@@ -29,7 +29,7 @@ public class AuthRequest extends BaseProtocol {
     @Override
     public void onProcess(WebSocketUser user, ByteBuffer buffer) {
         Return rci = new Return();
-        rci.type = type;
+        rci.type = this.getProtoType();
         rci.result = LocalDateTime.now().toString() + ":::" + accessToken;
         user.send(rci);
     }

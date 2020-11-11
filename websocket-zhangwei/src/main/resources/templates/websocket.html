@@ -36,6 +36,17 @@
 <script type="text/javascript">
     var ws;
 
+    function SokcetMessageHandler(){
+        this.alert = function(params){
+            alert(params);
+        };
+        this.dispatch= function(funname, params) {
+            this[funname](params);
+        }
+    }
+
+    var handler = new SokcetMessageHandler();
+
     function sendMessage() {
         var message = $("#message").val();
         // alert(message);
@@ -64,7 +75,7 @@
             $("#allow").text("您的浏览器支持 WebSocket!");
 
             // 打开一个 web socket
-            ws = new WebSocket("ws://192.168.203.1:8080/socket?accessToken=lhy");
+            ws = new WebSocket("ws://127.0.0.1:8080/socket?accessToken=lhy");
         } else {
             // 浏览器不支持 WebSocket
             // alert("您的浏览器不支持 WebSocket!");
@@ -80,6 +91,8 @@
                 // alert("数据已接收...");
                 console.log(event);
                 $("#result").text(event.data);
+                var realData = findSeq(event.data);
+                handler.dispatch("alert", realData.type);
             };
 
             // 监听Socket的关闭
@@ -89,6 +102,13 @@
                 $("#conncet").html("<font style=\"color: red;\">websocket 已断开</font>");
             };
         };
+    }
+
+    function findSeq(data) {
+        var index = data.indexOf('|');
+        var json = data.substring(index + 1);
+        var obj = JSON.parse(json);
+        return obj;
     }
 
     /**
