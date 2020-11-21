@@ -120,6 +120,12 @@
                 <version>2.21.0</version>
             </dependency>
 
+            <dependency>
+                <groupId>com.baomidou</groupId>
+                <artifactId>dynamic-datasource-spring-boot-starter</artifactId>
+                <version>3.1.1</version>
+            </dependency>
+
             <!-- 巨杉数据库s3 -->
 <!--            <dependency>-->
 <!--                <groupId>com.amazonaws</groupId>-->
