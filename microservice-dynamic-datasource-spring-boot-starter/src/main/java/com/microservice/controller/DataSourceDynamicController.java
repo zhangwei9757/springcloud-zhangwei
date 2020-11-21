@@ -9,9 +9,11 @@ import com.google.common.collect.Lists;
 import com.microservice.bean.DataSourceProperties;
 import com.microservice.dto.DruidDataSourceDto;
 import io.swagger.annotations.ApiOperation;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.BeansException;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +29,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping(value = "/dataSource")
+@Slf4j
 public class DataSourceDynamicController {
 
     @Resource
@@ -37,14 +40,37 @@ public class DataSourceDynamicController {
 
     @PostMapping(value = "/add")
     @ApiOperation("动态添加数据源")
-    public List<DruidDataSourceDto> add(@Validated @RequestBody DataSourceProperties properties) {
-        DataSourceProperty dataSourceProperty = new DataSourceProperty();
-        BeanUtils.copyProperties(properties, dataSourceProperty);
+    public String add(@Validated @RequestBody DataSourceProperties properties) {
+        if (Objects.isNull(properties)) {
+            return "参数不合法";
+        }
 
-        DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
-        DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty);
-        ds.addDataSource(properties.getPoolName(), dataSource);
-        return this.list();
+        String poolName = properties.getPoolName();
+        try {
+            if (StringUtils.isEmpty(poolName)) {
+                return "参数不合法";
+            }
+            List<DruidDataSourceDto> list = this.list();
+            long count = list.parallelStream().filter(f -> Objects.deepEquals(poolName, f.getDataSourceName()))
+                    .count();
+            if (count > 0) {
+                return "已存在数据源: " + poolName;
+            }
+            DataSourceProperty dataSourceProperty = new DataSourceProperty();
+            BeanUtils.copyProperties(properties, dataSourceProperty);
+
+            DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
+            DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty);
+            ds.addDataSource(poolName, dataSource);
+        } catch (BeansException e) {
+            log.error(">>> 动态添加数据源失败, 原因: {}", e.getLocalizedMessage(), e);
+            return "添加失败, 原因: " + e.getLocalizedMessage();
+        }
+
+        List<DruidDataSourceDto> list = this.list();
+        long count = list.parallelStream().filter(f -> Objects.deepEquals(poolName, f.getDataSourceName()))
+                .count();
+        return count == 1 ? "添加成功" : "添加失败";
     }
 
     @DeleteMapping(value = "/delete")
