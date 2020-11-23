@@ -42,7 +42,7 @@ spring:
           username: root
           password: jzbr
           driver-class-name: com.mysql.jdbc.Driver
-          url: jdbc:mysql://47.114.127.71:3306/car?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useSSL=false
+          url: jdbc:mysql://127.0.0.1:3306/mysql?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useSSL=false
           druid: #以下均为默认值
             initial-size: 3
             max-active: 8
