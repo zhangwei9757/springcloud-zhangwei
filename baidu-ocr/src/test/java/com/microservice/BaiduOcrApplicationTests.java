@@ -1,7 +1,6 @@
 package com.microservice;
 
 import com.baidu.aip.ocr.AipOcr;
-import com.google.common.base.Charsets;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -10,9 +9,12 @@ import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.util.CollectionUtils;
 
 import java.io.*;
-import java.nio.charset.Charset;
+import java.net.Inet4Address;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,9 +52,55 @@ public class BaiduOcrApplicationTests {
     }
 
     @Test
-    public void demo() {
+    public void demo() throws Exception {
+//        InetAddress addr = InetAddress.getLocalHost();
+//        System.out.println("Local HostAddress:" + addr.getHostAddress());
+//        String hostname = addr.getHostName();
+//        System.out.println("Local host name: " + hostname);
 
+
+        Enumeration allNetInterfaces = NetworkInterface.getNetworkInterfaces();
+        InetAddress ip = null;
+        while (allNetInterfaces.hasMoreElements())
+        {
+            NetworkInterface netInterface = (NetworkInterface) allNetInterfaces.nextElement();
+            System.out.println(netInterface.getName());
+            Enumeration addresses = netInterface.getInetAddresses();
+            while (addresses.hasMoreElements())
+            {
+                ip = (InetAddress) addresses.nextElement();
+                if (ip != null && ip instanceof Inet4Address)
+                {
+                    System.out.println("本机的IP = " + ip.getHostAddress());
+                }
+            }
+        }
     }
+
+    public static String getIpAddress() {
+        try {
+            Enumeration<NetworkInterface> allNetInterfaces = NetworkInterface.getNetworkInterfaces();
+            InetAddress ip = null;
+            while (allNetInterfaces.hasMoreElements()) {
+                NetworkInterface netInterface = (NetworkInterface) allNetInterfaces.nextElement();
+                if (netInterface.isLoopback() || netInterface.isVirtual() || !netInterface.isUp()) {
+                    continue;
+                } else {
+                    Enumeration<InetAddress> addresses = netInterface.getInetAddresses();
+                    while (addresses.hasMoreElements()) {
+                        ip = addresses.nextElement();
+                        if (ip != null && ip instanceof Inet4Address) {
+                            return ip.getHostAddress();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("IP地址获取失败" + e.toString());
+        }
+        return "";
+    }
+
 
     @Test
     public void ansiToUtf8() throws Exception {
@@ -156,7 +204,7 @@ public class BaiduOcrApplicationTests {
             list.add(substring);
         }
         StringBuilder sb = new StringBuilder();
-        if (!CollectionUtils.isEmpty(list)){
+        if (!CollectionUtils.isEmpty(list)) {
             for (String string : list) {
                 sb.append((char) Integer.parseInt(string, 16));
             }
