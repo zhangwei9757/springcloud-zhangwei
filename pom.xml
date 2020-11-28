@@ -38,7 +38,11 @@
         <module>scheduler-server</module>
         <module>scheduler-example-executor</module>
 
+        <module>microservice-dynamic-datasource-spring-boot-starter</module>
+        <module>microservice-protobuf-spring-boot-starter</module>
         <module>baidu-ocr</module>
+
+        <module>sentinel-zhangwei</module>
     </modules>
 
     <dependencyManagement>
