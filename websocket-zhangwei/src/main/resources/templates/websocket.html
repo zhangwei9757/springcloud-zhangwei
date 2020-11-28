@@ -45,7 +45,6 @@
         }
     }
 
-    var handler = new SokcetMessageHandler();
 
     function sendMessage() {
         var message = $("#message").val();
@@ -68,6 +67,8 @@
             ws.send(data);
         }
     }
+
+    var handler = new SokcetMessageHandler();
 
     function WebSocketTest() {
         if ("WebSocket" in window) {
