@@ -15,9 +15,6 @@
  */
 package com.alibaba.csp.sentinel.cluster.server.envoy.rls;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.csp.sentinel.cluster.TokenResult;
 import com.alibaba.csp.sentinel.cluster.TokenResultStatus;
 import com.alibaba.csp.sentinel.cluster.flow.rule.ClusterFlowRuleManager;
@@ -26,7 +23,6 @@ import com.alibaba.csp.sentinel.cluster.server.envoy.rls.log.RlsAccessLogger;
 import com.alibaba.csp.sentinel.cluster.server.envoy.rls.rule.EnvoySentinelRuleConverter;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.util.function.Tuple2;
-
 import com.google.protobuf.TextFormat;
 import io.envoyproxy.envoy.api.v2.ratelimit.RateLimitDescriptor;
 import io.envoyproxy.envoy.api.v2.ratelimit.RateLimitDescriptor.Entry;
@@ -38,6 +34,9 @@ import io.envoyproxy.envoy.service.ratelimit.v2.RateLimitResponse.RateLimit;
 import io.envoyproxy.envoy.service.ratelimit.v2.RateLimitResponse.RateLimit.Unit;
 import io.envoyproxy.envoy.service.ratelimit.v2.RateLimitServiceGrpc;
 import io.grpc.stub.StreamObserver;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.alibaba.csp.sentinel.cluster.server.envoy.rls.rule.EnvoySentinelRuleConverter.SEPARATOR;
 

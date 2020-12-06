@@ -17,7 +17,6 @@ package com.alibaba.csp.sentinel.demo.cluster.app.service;
 
 import com.alibaba.csp.sentinel.annotation.SentinelResource;
 import com.alibaba.csp.sentinel.slots.block.BlockException;
-
 import org.springframework.stereotype.Service;
 
 /**

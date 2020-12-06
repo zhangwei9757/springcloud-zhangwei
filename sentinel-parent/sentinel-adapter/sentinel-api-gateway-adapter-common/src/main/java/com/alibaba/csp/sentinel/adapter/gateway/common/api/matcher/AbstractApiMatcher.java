@@ -15,13 +15,13 @@
  */
 package com.alibaba.csp.sentinel.adapter.gateway.common.api.matcher;
 
-import java.util.HashSet;
-import java.util.Set;
-
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
 import com.alibaba.csp.sentinel.log.RecordLog;
 import com.alibaba.csp.sentinel.util.AssertUtil;
 import com.alibaba.csp.sentinel.util.function.Predicate;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Eric Zhao

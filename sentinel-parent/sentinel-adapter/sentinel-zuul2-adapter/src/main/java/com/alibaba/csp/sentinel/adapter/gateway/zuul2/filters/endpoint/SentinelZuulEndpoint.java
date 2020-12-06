@@ -20,7 +20,6 @@ import com.alibaba.csp.sentinel.adapter.gateway.zuul2.constants.SentinelZuul2Con
 import com.alibaba.csp.sentinel.adapter.gateway.zuul2.fallback.BlockResponse;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul2.fallback.ZuulBlockFallbackManager;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul2.fallback.ZuulBlockFallbackProvider;
-
 import com.netflix.zuul.context.SessionContext;
 import com.netflix.zuul.filters.http.HttpSyncEndpoint;
 import com.netflix.zuul.message.http.HttpRequestMessage;

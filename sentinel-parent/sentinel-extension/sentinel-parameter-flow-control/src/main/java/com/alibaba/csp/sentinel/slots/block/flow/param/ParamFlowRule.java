@@ -15,14 +15,10 @@
  */
 package com.alibaba.csp.sentinel.slots.block.flow.param;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-
 import com.alibaba.csp.sentinel.slots.block.AbstractRule;
 import com.alibaba.csp.sentinel.slots.block.RuleConstant;
+
+import java.util.*;
 
 /**
  * Rules for "hot-spot" frequent parameter flow control.

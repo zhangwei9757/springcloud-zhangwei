@@ -15,12 +15,11 @@
  */
 package com.alibaba.csp.sentinel.cluster.server.envoy.rls;
 
-import java.io.IOException;
-
 import com.alibaba.csp.sentinel.log.RecordLog;
-
 import io.grpc.Server;
 import io.grpc.ServerBuilder;
+
+import java.io.IOException;
 
 /**
  * @author Eric Zhao

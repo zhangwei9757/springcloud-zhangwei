@@ -18,7 +18,6 @@ package com.alibaba.csp.sentinel.slots.block.flow.param;
 import com.alibaba.csp.sentinel.EntryType;
 import com.alibaba.csp.sentinel.slotchain.ResourceWrapper;
 import com.alibaba.csp.sentinel.slotchain.StringResourceWrapper;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

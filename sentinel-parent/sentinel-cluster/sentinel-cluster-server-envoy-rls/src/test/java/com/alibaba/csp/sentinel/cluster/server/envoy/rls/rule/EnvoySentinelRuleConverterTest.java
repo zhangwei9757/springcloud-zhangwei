@@ -15,17 +15,12 @@
  */
 package com.alibaba.csp.sentinel.cluster.server.envoy.rls.rule;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-
 import com.alibaba.csp.sentinel.cluster.server.envoy.rls.rule.EnvoyRlsRule.KeyValueResource;
 import com.alibaba.csp.sentinel.cluster.server.envoy.rls.rule.EnvoyRlsRule.ResourceDescriptor;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
-
 import org.junit.Test;
+
+import java.util.*;
 
 import static com.alibaba.csp.sentinel.cluster.server.envoy.rls.rule.EnvoySentinelRuleConverter.SEPARATOR;
 import static org.junit.Assert.*;

@@ -15,14 +15,14 @@
  */
 package com.alibaba.csp.sentinel.cluster.server.envoy.rls.rule;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import com.alibaba.csp.sentinel.slots.block.ClusterRuleConstant;
 import com.alibaba.csp.sentinel.slots.block.flow.ClusterFlowConfig;
 import com.alibaba.csp.sentinel.slots.block.flow.FlowRule;
 import com.alibaba.csp.sentinel.util.AssertUtil;
 import com.alibaba.csp.sentinel.util.StringUtil;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author Eric Zhao

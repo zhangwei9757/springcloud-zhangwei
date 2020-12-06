@@ -15,8 +15,6 @@
  */
 package com.alibaba.csp.sentinel.adapter.gateway.sc.api.matcher;
 
-import java.util.Optional;
-
 import com.alibaba.csp.sentinel.adapter.gateway.common.SentinelGatewayConstants;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiDefinition;
 import com.alibaba.csp.sentinel.adapter.gateway.common.api.ApiPathPredicateItem;
@@ -25,8 +23,9 @@ import com.alibaba.csp.sentinel.adapter.gateway.common.api.matcher.AbstractApiMa
 import com.alibaba.csp.sentinel.adapter.gateway.sc.route.RouteMatchers;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.csp.sentinel.util.function.Predicate;
-
 import org.springframework.web.server.ServerWebExchange;
+
+import java.util.Optional;
 
 /**
  * @author Eric Zhao

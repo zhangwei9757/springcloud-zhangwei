@@ -16,8 +16,6 @@
 
 package com.alibaba.csp.sentinel.adapter.gateway.zuul2.filters.outbound;
 
-import java.util.Deque;
-
 import com.alibaba.csp.sentinel.Tracer;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul2.constants.SentinelZuul2Constants;
 import com.alibaba.csp.sentinel.adapter.gateway.zuul2.filters.EntryHolder;
@@ -26,6 +24,8 @@ import com.netflix.zuul.context.SessionContext;
 import com.netflix.zuul.filters.http.HttpOutboundFilter;
 import com.netflix.zuul.message.http.HttpResponseMessage;
 import rx.Observable;
+
+import java.util.Deque;
 
 /**
  * The Zuul outbound filter which will complete the Sentinel entries and

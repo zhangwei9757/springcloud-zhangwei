@@ -16,7 +16,6 @@
 package com.alibaba.csp.sentinel.adapter.quarkus.jaxrs.deployment;
 
 
-import javax.ws.rs.*;
 import javax.ws.rs.container.AsyncResponse;
 import javax.ws.rs.container.Suspended;
 import javax.ws.rs.core.MediaType;

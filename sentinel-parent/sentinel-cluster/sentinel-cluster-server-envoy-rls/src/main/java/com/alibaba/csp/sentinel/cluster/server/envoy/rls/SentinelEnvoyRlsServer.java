@@ -15,13 +15,13 @@
  */
 package com.alibaba.csp.sentinel.cluster.server.envoy.rls;
 
-import java.util.Optional;
-
 import com.alibaba.csp.sentinel.cluster.server.envoy.rls.datasource.EnvoyRlsRuleDataSourceService;
 import com.alibaba.csp.sentinel.config.SentinelConfig;
 import com.alibaba.csp.sentinel.init.InitExecutor;
 import com.alibaba.csp.sentinel.log.RecordLog;
 import com.alibaba.csp.sentinel.util.StringUtil;
+
+import java.util.Optional;
 
 /**
  * @author Eric Zhao

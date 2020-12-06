@@ -15,16 +15,15 @@
  */
 package com.alibaba.csp.sentinel.cluster.server.codec.netty;
 
-import java.util.List;
-
 import com.alibaba.csp.sentinel.cluster.codec.request.RequestEntityDecoder;
 import com.alibaba.csp.sentinel.cluster.request.Request;
 import com.alibaba.csp.sentinel.cluster.server.codec.ServerEntityCodecProvider;
 import com.alibaba.csp.sentinel.log.RecordLog;
-
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+
+import java.util.List;
 
 /**
  * @author Eric Zhao

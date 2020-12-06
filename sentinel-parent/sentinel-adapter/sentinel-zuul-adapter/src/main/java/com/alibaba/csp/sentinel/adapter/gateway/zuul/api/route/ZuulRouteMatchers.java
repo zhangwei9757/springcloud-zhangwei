@@ -16,7 +16,6 @@
 package com.alibaba.csp.sentinel.adapter.gateway.zuul.api.route;
 
 import com.alibaba.csp.sentinel.util.function.Predicate;
-
 import com.netflix.zuul.context.RequestContext;
 
 /**

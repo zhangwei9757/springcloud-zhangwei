@@ -15,11 +15,11 @@
  */
 package com.alibaba.csp.sentinel.adapter.gateway.zuul2.api.route;
 
-import java.util.regex.Pattern;
-
 import com.alibaba.csp.sentinel.util.AssertUtil;
 import com.alibaba.csp.sentinel.util.function.Predicate;
 import com.netflix.zuul.message.http.HttpRequestMessage;
+
+import java.util.regex.Pattern;
 
 /**
  * @author wavesZh

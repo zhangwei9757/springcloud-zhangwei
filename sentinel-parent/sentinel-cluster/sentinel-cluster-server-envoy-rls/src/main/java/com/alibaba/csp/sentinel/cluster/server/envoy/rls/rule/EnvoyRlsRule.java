@@ -15,11 +15,11 @@
  */
 package com.alibaba.csp.sentinel.cluster.server.envoy.rls.rule;
 
+import com.alibaba.csp.sentinel.util.AssertUtil;
+
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-
-import com.alibaba.csp.sentinel.util.AssertUtil;
 
 /**
  * @author Eric Zhao

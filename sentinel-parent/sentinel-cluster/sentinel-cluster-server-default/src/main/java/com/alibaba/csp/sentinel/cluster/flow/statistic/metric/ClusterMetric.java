@@ -15,11 +15,11 @@
  */
 package com.alibaba.csp.sentinel.cluster.flow.statistic.metric;
 
-import java.util.List;
-
 import com.alibaba.csp.sentinel.cluster.flow.statistic.data.ClusterFlowEvent;
 import com.alibaba.csp.sentinel.cluster.flow.statistic.data.ClusterMetricBucket;
 import com.alibaba.csp.sentinel.util.AssertUtil;
+
+import java.util.List;
 
 /**
  * @author Eric Zhao

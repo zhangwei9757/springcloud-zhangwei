@@ -15,14 +15,13 @@
  */
 package com.alibaba.csp.sentinel.cluster.server.codec.data;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.alibaba.csp.sentinel.cluster.ClusterConstants;
 import com.alibaba.csp.sentinel.cluster.codec.EntityDecoder;
 import com.alibaba.csp.sentinel.cluster.request.data.ParamFlowRequestData;
-
 import io.netty.buffer.ByteBuf;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author jialiang.linjl

@@ -15,12 +15,11 @@
  */
 package com.alibaba.csp.sentinel.cluster.server.codec.registry;
 
+import com.alibaba.csp.sentinel.cluster.codec.EntityDecoder;
+import io.netty.buffer.ByteBuf;
+
 import java.util.HashMap;
 import java.util.Map;
-
-import com.alibaba.csp.sentinel.cluster.codec.EntityDecoder;
-
-import io.netty.buffer.ByteBuf;
 
 /**
  * @author Eric Zhao

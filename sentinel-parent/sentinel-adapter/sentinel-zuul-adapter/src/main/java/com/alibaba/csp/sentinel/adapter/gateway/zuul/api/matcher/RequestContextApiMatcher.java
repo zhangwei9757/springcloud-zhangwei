@@ -23,7 +23,6 @@ import com.alibaba.csp.sentinel.adapter.gateway.common.api.matcher.AbstractApiMa
 import com.alibaba.csp.sentinel.adapter.gateway.zuul.api.route.ZuulRouteMatchers;
 import com.alibaba.csp.sentinel.util.StringUtil;
 import com.alibaba.csp.sentinel.util.function.Predicate;
-
 import com.netflix.zuul.context.RequestContext;
 
 /**

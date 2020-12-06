@@ -17,7 +17,6 @@ package com.alibaba.csp.sentinel.cluster.server.codec.data;
 
 import com.alibaba.csp.sentinel.cluster.codec.EntityWriter;
 import com.alibaba.csp.sentinel.cluster.response.data.FlowTokenResponseData;
-
 import io.netty.buffer.ByteBuf;
 
 /**

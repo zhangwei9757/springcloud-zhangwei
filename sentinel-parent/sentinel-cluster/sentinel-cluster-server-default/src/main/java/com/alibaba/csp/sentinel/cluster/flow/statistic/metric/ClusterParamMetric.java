@@ -19,7 +19,6 @@ import com.alibaba.csp.sentinel.slots.statistic.base.LongAdder;
 import com.alibaba.csp.sentinel.slots.statistic.cache.CacheMap;
 import com.alibaba.csp.sentinel.util.AssertUtil;
 
-import java.util.*;
 import java.util.Map.Entry;
 
 /**
