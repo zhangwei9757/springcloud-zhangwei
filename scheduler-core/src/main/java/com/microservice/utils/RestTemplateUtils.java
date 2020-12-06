@@ -610,6 +610,66 @@ public class RestTemplateUtils {
     }
 
     /**
+     * 带证书httpPost请求
+     * @param url   接口地址
+     * @param param 参数
+     * @return
+     * @throws Exception
+     */
+//    public static String sendRedEnvelope(String url, String param) throws Exception {
+//        //PKCS12的密码
+//        String PKCS12 = "";
+//        //证书地址
+//        String fileRoute = "";
+//        //指定读取证书格式为PKCS12
+//        KeyStore keyStore = KeyStore.getInstance("PKCS12");
+//        //读取本机存放的PKCS12证书文件
+//        FileInputStream instream = new FileInputStream(new File(fileRoute));
+//        try {
+//            //指定PKCS12的密码
+//            keyStore.load(instream, PKCS12.toCharArray());
+//        } finally {
+//            instream.close();
+//        }
+//        //指定TLS版本
+//        SSLContext sslcontext = SSLContexts.custom()
+//                .loadKeyMaterial(keyStore, PKCS12.toCharArray())
+//                .build();
+//        //设置httpclient的SSLSocketFactory
+//        SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+//                sslcontext,
+//                new String[]{"TLSv1"},
+//                null,
+//                SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+//        CloseableHttpClient httpclient = HttpClients.custom()
+//                .setSSLSocketFactory(sslsf)
+//                .build();
+//        StringBuffer stringBuffer = new StringBuffer();
+//        try {
+//            HttpPost httpPost = new HttpPost(url);
+//            InputStream is = new ByteArrayInputStream(param.getBytes("UTF-8"));
+//            //InputStreamEntity严格是对内容和长度相匹配的。用法和BasicHttpEntity类似
+//            InputStreamEntity inputStreamEntity = new InputStreamEntity(is, is.available());
+//            httpPost.setEntity(inputStreamEntity);
+//            CloseableHttpResponse response = httpclient.execute(httpPost);
+//            try {
+//                HttpEntity entity = response.getEntity();
+//                BufferedReader reader = new BufferedReader(new InputStreamReader(
+//                        entity.getContent(), "UTF-8"));
+//                String inputLine;
+//                while ((inputLine = reader.readLine()) != null) {
+//                    stringBuffer.append(inputLine);
+//                }
+//            } finally {
+//                response.close();
+//            }
+//        } finally {
+//            httpclient.close();
+//        }
+//        return stringBuffer.toString();
+//    }
+
+    /**
      * 获取RestTemplate实例对象，可自由调用其方法
      *
      * @return RestTemplate实例对象
