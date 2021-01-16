@@ -1,0 +1,18 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.microservice.bean.PyCallbackProperties",
+      "name": "microservice.py",
+      "type": "com.microservice.bean.PyCallbackProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.microservice.bean.PyCallbackProperties",
+      "defaultValue": "http:\/\/localhost:8080",
+      "name": "microservice.py.callback-url",
+      "type": "java.lang.String"
+    }
+  ]
+}
