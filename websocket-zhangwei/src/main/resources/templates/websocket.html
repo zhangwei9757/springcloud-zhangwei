@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script src="/jquery.js"></script>
+</head>
+<body>
+<div id="sse">
+    <h1>WebSocket 测试页面</h1>
+
+    <div>
+        <button onclick="WebSocketTest()">运行 WebSocket</button>
+        <div id="allow"></div>
+        <br/>
+        <div id="conncet"><font style="color: red;">websocket 未连接</font></div>
+    </div>
+    <br/>
+    <div>
+        <div style="float: left;">
+            <textarea id="message" rows="20" cols="50"></textarea>
+            <button onclick="sendMessage()">发送</button>
+        </div>
+        <div>
+            <textarea id="result" rows="20" cols="50"></textarea>
+        </div>
+    </div>
+
+</div>
+<br/>
+<div>
+    <div style="float: left;">
+        选择文件：<input type="file" id="file" onchange="sendBinary(this.files)"/>
+    </div>
+</div>
+<script type="text/javascript">
+    var ws;
+
+    function SokcetMessageHandler(){
+        this.alert = function(params){
+            alert(params);
+        };
+        this.dispatch= function(funname, params) {
+            this[funname](params);
+        }
+    }
+
+
+    function sendMessage() {
+        var message = $("#message").val();
+        // alert(message);
+        ws.send(message);
+    }
+
+    function sendBinary(files) {
+        console.log(files);
+
+        var reader = new FileReader();
+
+        reader.readAsArrayBuffer(files[0]);
+        reader.onload = function () {
+            //当读取完成后回调这个函数,然后此时文件的内容存储到了result中,直接操作即可
+            console.log(this.result);
+
+            var data = protoEncoderMessage(2147483647, 3, this.result);
+            console.log(data);
+            ws.send(data);
+        }
+    }
+
+    var handler = new SokcetMessageHandler();
+
+    function WebSocketTest() {
+        if ("WebSocket" in window) {
+            // alert("您的浏览器支持 WebSocket!");
+            $("#allow").text("您的浏览器支持 WebSocket!");
+
+            // 打开一个 web socket
+            ws = new WebSocket("ws://127.0.0.1:8080/socket?accessToken=lhy");
+        } else {
+            // 浏览器不支持 WebSocket
+            // alert("您的浏览器不支持 WebSocket!");
+            $("#allow").text("您的浏览器不支持 WebSocket!");
+        }
+
+        ws.onopen = function () {
+            $("#conncet").html("<font style=\"color: blue;\">websocket 已连接</font>");
+            // alert("数据发送中...");
+
+            // 监听消息
+            ws.onmessage = function (event) {
+                // alert("数据已接收...");
+                console.log(event);
+                $("#result").text(event.data);
+                var realData = findSeq(event.data);
+                handler.dispatch("alert", realData.type);
+            };
+
+            // 监听Socket的关闭
+            ws.onclose = function (event) {
+                // alert("连接已关闭...");
+                $("#message").text("连接已关闭: " + event);
+                $("#conncet").html("<font style=\"color: red;\">websocket 已断开</font>");
+            };
+        };
+    }
+
+    function findSeq(data) {
+        var index = data.indexOf('|');
+        var json = data.substring(index + 1);
+        var obj = JSON.parse(json);
+        return obj;
+    }
+
+    /**
+     *  字符串转 ArrayBuffer
+     * @param message
+     * @param ecnoder
+     * @returns {Uint8Array}
+     * @constructor
+     */
+    function String2ArrayBuffer(message, ecnoder) {
+        var enc = new TextEncoder(ecnoder | "utf-8");
+        var content = enc.encode(message);
+        return content;
+    }
+
+    /**
+     * 业务主键 + 协议 + 数据 = 二进制传输数据
+     * @param bussionId
+     * @param proto
+     * @param oldArrayBuffer
+     * @returns {DataView}
+     */
+    function protoEncoderMessage(bussionId, proto, oldArrayBuffer) {
+        var totalArrayBuffer = new ArrayBuffer(4 + 1 + oldArrayBuffer.byteLength)
+        var arr2 = Array.prototype.slice.call(new Int8Array(oldArrayBuffer));
+        console.log(arr2);
+
+        var view = new DataView(totalArrayBuffer);
+        view.setInt32(0, bussionId); // 2147483647 极限值
+        view.setInt8(4, proto); // 1:表示 二进制文本 2:表示jpg图片
+
+        arr2.forEach(function (value, index) {
+            view.setInt8(index + 5, value)
+        });
+        return view;
+    }
+
+</script>
+</body>
+</html>

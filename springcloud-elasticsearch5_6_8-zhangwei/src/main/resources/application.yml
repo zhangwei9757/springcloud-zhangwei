@@ -1,0 +1,16 @@
+server:
+  port: 8001
+
+spring:
+  application:
+    name: elasticsearch-server
+  data:
+    elasticsearch:
+      cluster-name: my-elasticsearch
+      cluster-nodes: 127.0.0.1:9301,127.0.0.1:9302,127.0.0.1:9303
+      repositories:
+        enabled: true
+      properties:
+        transport:
+          tcp:
+            connect_timeout: 120s

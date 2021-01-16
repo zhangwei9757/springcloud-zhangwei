@@ -1,0 +1,181 @@
+server:
+  port: 8000
+  # 设置请求头最大长度
+  max-http-header-size: 4048576
+  tomcat:
+    max-http-header-size: -1
+    max-http-post-size: -1
+
+spring:
+  application:
+    name: xx-server
+  datasource:
+    #    type: com.alibaba.druid.pool.DruidDataSource
+    #    driverClassName: com.mysql.jdbc.Driver
+    #    filters: stat,wall
+    #    druid:
+    #      url: jdbc:mysql://x.x.x.x:3306/xx?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false
+    #      username: xx
+    #      password: xx
+    #      initialSize: 5
+    #      minIdle: 5
+    #      maxActive: 20
+    #      maxWait: 60000
+    #      timeBetweenEvictionRunsMillis: 60000
+    #      minEvictableIdleTimeMillis: 300000
+    #      validationQuery: SELECT 1 FROM DUAL
+    #      testWhileIdle: true
+    #      testOnBorrow: false
+    #      testOnReturn: false
+    #      poolPreparedStatements: false
+    #      maxPoolPreparedStatementPerConnectionSize: 20
+    #      connectionProperties: 'druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000'
+    druid:
+      stat-view-servlet:
+        loginUsername: zhangwei
+        loginPassword: zhangwei
+    dynamic:
+      primary: master
+      strict: true
+      datasource:
+        master_1:
+          username: root
+          password: jzbr
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/mysql?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useSSL=false
+          druid: #以下均为默认值
+            initial-size: 3
+            max-active: 8
+            min-idle: 2
+            max-wait: -1
+            min-evictable-idle-time-millis: 30000
+            max-evictable-idle-time-millis: 30000
+            time-between-eviction-runs-millis: 0
+            validation-query: select 1
+            validation-query-timeout: -1
+            test-on-borrow: false
+            test-on-return: false
+            test-while-idle: true
+            pool-prepared-statements: true
+            max-open-prepared-statements: 100
+            filters: stat,wall
+            share-prepared-statements: true
+        master_2:
+          username: root
+          password: jzbr
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/oauth2?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useSSL=false
+          druid: #以下均为默认值
+            initial-size: 3
+            max-active: 8
+            min-idle: 2
+            max-wait: -1
+            min-evictable-idle-time-millis: 30000
+            max-evictable-idle-time-millis: 30000
+            time-between-eviction-runs-millis: 0
+            validation-query: select 1
+            validation-query-timeout: -1
+            test-on-borrow: false
+            test-on-return: false
+            test-while-idle: true
+            pool-prepared-statements: true
+            max-open-prepared-statements: 100
+            filters: stat,wall
+            share-prepared-statements: true
+        slave_1:
+          username: root
+          password: jzbr
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/nacos?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useSSL=false
+          druid: #以下均为默认值
+            initial-size: 3
+            max-active: 8
+            min-idle: 2
+            max-wait: -1
+            min-evictable-idle-time-millis: 30000
+            max-evictable-idle-time-millis: 30000
+            time-between-eviction-runs-millis: 0
+            validation-query: select 1
+            validation-query-timeout: -1
+            test-on-borrow: false
+            test-on-return: false
+            test-while-idle: true
+            pool-prepared-statements: true
+            max-open-prepared-statements: 100
+            filters: stat,wall
+            share-prepared-statements: true
+        slave_2:
+          username: root
+          password: jzbr
+          driver-class-name: com.mysql.jdbc.Driver
+          url: jdbc:mysql://127.0.0.1:3306/questions?useUnicode=true&characterEncoding=UTF-8&serverTimezone=Asia/Shanghai&zeroDateTimeBehavior=convertToNull&useSSL=false
+          druid: #以下均为默认值
+            initial-size: 3
+            max-active: 8
+            min-idle: 2
+            max-wait: -1
+            min-evictable-idle-time-millis: 30000
+            max-evictable-idle-time-millis: 30000
+            time-between-eviction-runs-millis: 0
+            validation-query: select 1
+            validation-query-timeout: -1
+            test-on-borrow: false
+            test-on-return: false
+            test-while-idle: true
+            pool-prepared-statements: true
+            max-open-prepared-statements: 100
+            filters: stat,wall
+            share-prepared-statements: true
+  redis:
+    host: x.x.x.x
+    port: 6379
+    password: x
+    timeout: 5000ms
+    jedis:
+      pool:
+        max-active: 8 #最大连接数据库连接数,设 0 为没有限制
+        max-idle: 8  #最大等待连接中的数量,设 0 为没有限制
+        max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
+        min-idle: 0 #最小等待连接中的数量,设 0 为没有限制
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+        min-idle: 0
+      shutdown-timeout: 1000ms
+management:
+  health:
+    db:
+      enabled: false
+    mail:
+      enabled: false
+    redis:
+      enabled: false
+    rabbit:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*" #暴露所有节点 "bus-refresh"
+      health:
+        senysssitive: false #关闭过滤敏感信息
+  endpoint:
+    health:
+      show-details: ALWAYS  #显示详细信息
+
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#  mapper-locations: classpath:/mapper/*Mapper.xml
+#  type-aliases-package: x.x.entity
+#  check-config-location: true
+
+#  global-config:
+#    db-config:
+#      id-type: auto
+#      field-strategy: ignored
+
+#logging:
+#  level:
+#    root: info

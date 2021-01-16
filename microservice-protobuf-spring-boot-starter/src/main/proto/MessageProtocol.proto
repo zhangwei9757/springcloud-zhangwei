@@ -1,0 +1,35 @@
+syntax = "proto3";
+option optimize_for = SPEED;
+option java_package = "com.microservice.bean";
+option java_outer_classname = "MessageProtocolPoJo";
+
+message MessageProtocol {
+  int32 len = 1;
+  string content = 2;
+  string protocol = 3;
+  string clientKey = 4;
+  string channelKey = 5;
+
+  enum DataType {
+    StudentType = 0;
+    WorkerType = 1;
+  }
+
+  DataType data_type = 6;
+
+  oneof dataBody {
+    Student student = 7;
+    Worker worker = 8;
+  }
+
+}
+
+
+message Student {
+  int32 id = 1;
+  string name = 2;
+}
+message Worker {
+  string name = 1;
+  int32 age = 2;
+}

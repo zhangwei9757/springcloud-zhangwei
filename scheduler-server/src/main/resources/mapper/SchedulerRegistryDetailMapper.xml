@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.microservice.mapper.SchedulerRegistryDetailMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.microservice.entity.SchedulerRegistryDetail">
+        <id column="register_detail_id" property="registerDetailId" />
+        <result column="register_detail_registry_id" property="registerDetailRegistryId" />
+        <result column="register_detail_app_name" property="registerDetailAppName" />
+        <result column="register_detail_ip" property="registerDetailIp" />
+        <result column="register_detail_port" property="registerDetailPort" />
+        <result column="register_detail_sort" property="registerDetailSort" />
+        <result column="register_detail_status" property="registerDetailStatus" />
+        <result column="register_detail_online_time" property="registerDetailOnlineTime" />
+        <result column="register_detail_offline_time" property="registerDetailOfflineTime" />
+        <result column="register_detail_create_time" property="registerDetailCreateTime" />
+    </resultMap>
+
+</mapper>
