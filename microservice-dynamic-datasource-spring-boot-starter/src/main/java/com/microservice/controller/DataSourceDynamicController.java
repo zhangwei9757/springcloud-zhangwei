@@ -5,16 +5,15 @@ import com.baomidou.dynamic.datasource.DynamicGroupDataSource;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
-import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.microservice.bean.DataSourceProperties;
 import com.microservice.dto.DruidDataSourceDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -162,53 +161,32 @@ public class DataSourceDynamicController {
             // 数据库
             DruidDataSource dataSource = (DruidDataSource) value1;
 
+            DruidDataSourceDto dataSourceDto = new DruidDataSourceDto();
+            dataSourceDto.setGroupName(null);
+            dataSourceDto.setDataSourceName(dataSourceName);
+            dataSourceDto.setDbType(dataSource.getDbType());
+            dataSourceDto.setDriverClass(dataSource.getDriverClassName());
+            dataSourceDto.setUserName(dataSource.getUsername());
+            dataSourceDto.setJdbcUrl(dataSource.getRawJdbcUrl());
+
+            String groupName = StringUtils.EMPTY;
             if (CollectionUtils.isEmpty(currentGroupDataSources)) {
                 // 组成数据
-                DruidDataSourceDto dataSourceDto = new DruidDataSourceDto();
-                dataSourceDto.setGroupName(null);
-                dataSourceDto.setDataSourceName(dataSourceName);
-                dataSourceDto.setDbType(dataSource.getDbType());
-                dataSourceDto.setDriverClass(dataSource.getDriverClassName());
-                dataSourceDto.setUserName(dataSource.getUsername());
-                dataSourceDto.setJdbcUrl(dataSource.getRawJdbcUrl());
-
-                ddss.add(dataSourceDto);
-            } else {
-                currentGroupDataSources.forEach((key, value) -> {
-                    String groupName = value.getGroupName();
-                    List<DataSource> dss = value.getDataSources();
-                    List<DataSource> collect = dss.stream()
-                            .filter(f -> Objects.deepEquals(((DruidDataSource) f).getRawJdbcUrl(), dataSource.getRawJdbcUrl()))
-                            .collect(Collectors.toList());
-                    if (!CollectionUtils.isEmpty(collect)) {
-                        collect.forEach(source -> {
-                            // 组成数据
-                            DruidDataSource dataSource1 = (DruidDataSource) source;
-
-                            DruidDataSourceDto dataSourceDto = new DruidDataSourceDto();
-                            dataSourceDto.setGroupName(groupName);
-                            dataSourceDto.setDataSourceName(dataSourceName);
-                            dataSourceDto.setDbType(dataSource1.getDbType());
-                            dataSourceDto.setDriverClass(dataSource1.getDriverClassName());
-                            dataSourceDto.setUserName(dataSource.getUsername());
-                            dataSourceDto.setJdbcUrl(dataSource1.getRawJdbcUrl());
-
-                            ddss.add(dataSourceDto);
-                        });
-                    }
-                });
+                Map.Entry<String, DynamicGroupDataSource> dataSourceEntry = currentGroupDataSources.entrySet().stream().filter(f -> dataSourceName.contains(f.getKey()))
+                        .findFirst().orElseGet(() -> null);
+                if (Objects.nonNull(dataSourceEntry)) {
+                    DynamicGroupDataSource value = dataSourceEntry.getValue();
+                    groupName = value.getGroupName();
+                }
             }
+            dataSourceDto.setGroupName(groupName);
+            ddss.add(dataSourceDto);
         });
+
         if (CollectionUtils.isEmpty(ddss)) {
             return Lists.newArrayList();
         }
 
-        ddss.forEach(f -> {
-            String groupName = f.getGroupName();
-            if (Strings.isNullOrEmpty(groupName)) {
-                f.setGroupName("");
-            }
-        });
         return ddss.parallelStream()
                 .sorted(Comparator.comparing(DruidDataSourceDto::getGroupName))
                 .sorted(Comparator.comparing(DruidDataSourceDto::getDataSourceName))
