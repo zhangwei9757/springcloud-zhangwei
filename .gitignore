@@ -32,3 +32,4 @@ build/
 /logs/
 sentinel-parent
 sentinel-zhangwei
+**/.mvn/**
