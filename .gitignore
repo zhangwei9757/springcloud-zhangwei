@@ -33,3 +33,4 @@ build/
 sentinel-parent
 sentinel-zhangwei
 **/.mvn/**
+.mvn/
