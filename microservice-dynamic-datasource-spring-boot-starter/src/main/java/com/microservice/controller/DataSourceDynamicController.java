@@ -5,6 +5,7 @@ import com.baomidou.dynamic.datasource.DynamicGroupDataSource;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.microservice.bean.DataSourceProperties;
 import com.microservice.dto.DruidDataSourceDto;
@@ -82,9 +83,9 @@ public class DataSourceDynamicController {
         }
 
         long master = list.stream()
-                .filter(f -> !Objects.deepEquals(name.toLowerCase().trim(), f.getDataSourceName()) && Objects.deepEquals("master", f.getGroupName()))
+                .filter(f -> Objects.deepEquals(name.toLowerCase().trim(), f.getDataSourceName()) && Objects.deepEquals("master", f.getGroupName()))
                 .count();
-        if (master <= 0) {
+        if (master > 0) {
             return String.format("一旦删除: %s, 将不存在主数据库，请先配置[新主数据库], 再删除：%s", name, name);
         }
 
@@ -113,9 +114,43 @@ public class DataSourceDynamicController {
         return "删除数据库: " + name + ", 失败";
     }
 
+    @DeleteMapping(value = "/reSetPrimaryDataSource")
+    @ApiOperation("重置主数据源")
+    public String reSetPrimaryDataSource(String name) {
+        List<DruidDataSourceDto> list = this.list();
+        if (CollectionUtils.isEmpty(list)) {
+            return "未发现数据库";
+        }
+
+        long master = list.stream()
+                .filter(f -> Objects.deepEquals(name.toLowerCase().trim(), f.getDataSourceName()) && Objects.deepEquals("master", f.getGroupName()))
+                .count();
+        if (master > 0) {
+            return String.format("一旦删除: %s, 将不存在主数据库，请先配置[新主数据库], 再删除：%s", name, name);
+        }
+
+        // 验证合法性
+        DruidDataSourceDto druidDataSourceDto = list.stream()
+                .filter(f -> Objects.deepEquals(name.toLowerCase().trim(), f.getDataSourceName()))
+                .findFirst()
+                .orElseGet((() -> null));
+        if (Objects.isNull(druidDataSourceDto)) {
+            return "未发现数据库: " + name;
+        }
+
+        DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
+        // 先停掉数据库， 再删除此条记录 ,删除操作自动联动操作
+        ds.setPrimary(name.toLowerCase().trim());
+        return "删除数据库: " + name + ", 失败";
+    }
+
     @GetMapping(value = "/list")
     @ApiOperation("动态查询所有数据源")
     public List<DruidDataSourceDto> list() {
+        return findDataSourceList();
+    }
+
+    private List<DruidDataSourceDto> findDataSourceList() {
         DynamicRoutingDataSource dynamicRoutingDataSource = (DynamicRoutingDataSource) dataSource;
         Map<String, DynamicGroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getCurrentGroupDataSources();
         Map<String, DataSource> currentDataSources = dynamicRoutingDataSource.getCurrentDataSources();
@@ -167,6 +202,13 @@ public class DataSourceDynamicController {
         if (CollectionUtils.isEmpty(ddss)) {
             return Lists.newArrayList();
         }
+
+        ddss.forEach(f -> {
+            String groupName = f.getGroupName();
+            if (Strings.isNullOrEmpty(groupName)) {
+                f.setGroupName("");
+            }
+        });
         return ddss.parallelStream()
                 .sorted(Comparator.comparing(DruidDataSourceDto::getGroupName))
                 .sorted(Comparator.comparing(DruidDataSourceDto::getDataSourceName))
