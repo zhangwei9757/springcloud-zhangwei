@@ -5,6 +5,7 @@ import com.baomidou.dynamic.datasource.DynamicGroupDataSource;
 import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
+import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
 import com.google.common.collect.Lists;
 import com.microservice.bean.DataSourceProperties;
 import com.microservice.dto.DruidDataSourceDto;
@@ -13,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
 import org.springframework.util.CollectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -37,6 +39,9 @@ public class DataSourceDynamicController {
 
     @Resource
     private DataSourceCreator dataSourceCreator;
+
+    @Resource
+    private ApplicationContext applicationContext;
 
     @PostMapping(value = "/add")
     @ApiOperation("动态添加数据源")
@@ -146,6 +151,24 @@ public class DataSourceDynamicController {
     @GetMapping(value = "/list")
     @ApiOperation("动态查询所有数据源")
     public List<DruidDataSourceDto> list() {
+        return findDataSourceList();
+    }
+
+    @GetMapping(value = "/findDataSourceBasicInfo")
+    @ApiOperation("查询数据源基本配置信息")
+    public List<DruidDataSourceDto> findDataSourceBasicInfo() {
+        DynamicDataSourceProperties bean = applicationContext.getBean(DynamicDataSourceProperties.class);
+        DynamicDataSourceProperties dataSourceProperties = new DynamicDataSourceProperties();
+        BeanUtils.copyProperties(bean, dataSourceProperties);
+
+        Map<String, DataSourceProperty> datasource = dataSourceProperties.getDatasource();
+        if (!CollectionUtils.isEmpty(datasource)) {
+            datasource.values().forEach(f -> {
+                f.setPassword(null);
+                f.setPublicKey(null);
+            });
+        }
+
         return findDataSourceList();
     }
 
