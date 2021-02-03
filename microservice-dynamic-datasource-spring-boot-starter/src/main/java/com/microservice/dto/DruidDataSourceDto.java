@@ -17,6 +17,8 @@ import java.io.Serializable;
 public class DruidDataSourceDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
+    private Object primary;
+
     private String groupName;
     private String dataSourceName;
 

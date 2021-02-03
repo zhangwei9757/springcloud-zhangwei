@@ -16,11 +16,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
+import java.lang.reflect.Field;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -86,13 +88,6 @@ public class DataSourceDynamicController {
             return "未发现数据库";
         }
 
-        long master = list.stream()
-                .filter(f -> Objects.deepEquals(name.toLowerCase().trim(), f.getDataSourceName()) && Objects.deepEquals("master", f.getGroupName()))
-                .count();
-        if (master > 0) {
-            return String.format("一旦删除: %s, 将不存在主数据库，请先配置[新主数据库], 再删除：%s", name, name);
-        }
-
         // 验证合法性
         DruidDataSourceDto druidDataSourceDto = list.stream()
                 .filter(f -> Objects.deepEquals(name.toLowerCase().trim(), f.getDataSourceName()))
@@ -124,13 +119,6 @@ public class DataSourceDynamicController {
         List<DruidDataSourceDto> list = this.list();
         if (CollectionUtils.isEmpty(list)) {
             return "未发现数据库";
-        }
-
-        long master = list.stream()
-                .filter(f -> Objects.deepEquals(name.toLowerCase().trim(), f.getDataSourceName()) && Objects.deepEquals("master", f.getGroupName()))
-                .count();
-        if (master > 0) {
-            return String.format("一旦删除: %s, 将不存在主数据库，请先配置[新主数据库], 再删除：%s", name, name);
         }
 
         // 验证合法性
@@ -172,6 +160,25 @@ public class DataSourceDynamicController {
         return findDataSourceList();
     }
 
+    @GetMapping(value = "/findPrimaryDataSource")
+    @ApiOperation("查询当前线程主数据源信息")
+    public Object findPrimaryDataSource() {
+        DynamicRoutingDataSource dynamicRoutingDataSource = (DynamicRoutingDataSource) dataSource;
+        DruidDataSource dataSource = (DruidDataSource) dynamicRoutingDataSource.determineDataSource();
+
+        List<DruidDataSourceDto> dataSourceList = this.findDataSourceList();
+        DruidDataSourceDto druidDataSourceDto = dataSourceList.stream().filter(f -> f.getDataSourceName().equals(dataSource.getName())).findFirst().orElseGet(() -> null);
+        if (Objects.isNull(druidDataSourceDto)) {
+            return null;
+        }
+
+        Field primary = ReflectionUtils.findField(dynamicRoutingDataSource.getClass(), "primary");
+        primary.setAccessible(true);
+        Object field = ReflectionUtils.getField(primary, dynamicRoutingDataSource);
+        druidDataSourceDto.setPrimary(field);
+        return druidDataSourceDto;
+    }
+
     private List<DruidDataSourceDto> findDataSourceList() {
         DynamicRoutingDataSource dynamicRoutingDataSource = (DynamicRoutingDataSource) dataSource;
         Map<String, DynamicGroupDataSource> currentGroupDataSources = dynamicRoutingDataSource.getCurrentGroupDataSources();
@@ -199,7 +206,11 @@ public class DataSourceDynamicController {
                         .findFirst().orElseGet(() -> null);
                 if (Objects.nonNull(dataSourceEntry)) {
                     DynamicGroupDataSource value = dataSourceEntry.getValue();
-                    groupName = value.getGroupName();
+                    List<DataSource> dataSources = value.getDataSources();
+                    if (!CollectionUtils.isEmpty(dataSources)) {
+                        long count = dataSources.stream().filter(f -> ((DruidDataSource) f).getName().equals(dataSourceName)).count();
+                        groupName = count > 0 ? value.getGroupName() : groupName;
+                    }
                 }
             }
             dataSourceDto.setGroupName(groupName);
