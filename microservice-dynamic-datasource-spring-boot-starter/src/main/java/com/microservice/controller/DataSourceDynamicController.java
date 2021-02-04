@@ -11,6 +11,7 @@ import com.google.common.collect.Lists;
 import com.microservice.bean.DataSourceProperties;
 import com.microservice.bean.OneClickDeployment;
 import com.microservice.dto.DruidDataSourceDto;
+import com.microservice.dto.OneClickDeploymentResultDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -66,10 +67,6 @@ public class DataSourceDynamicController {
                 return "新数据源列表不能为空";
             }
 
-            if (CollectionUtils.isEmpty(deleteDataSourceNames)) {
-                return "待删除旧数据源名不能为空";
-            }
-
             List<DruidDataSourceDto> list = this.list();
             Set<String> oldDataSourceNames = list.stream().map(DruidDataSourceDto::getDataSourceName).collect(Collectors.toSet());
             Set<String> newDataSourceNames = dataSources.stream().map(DataSourceProperties::getPoolName).collect(Collectors.toSet());
@@ -96,8 +93,8 @@ public class DataSourceDynamicController {
             }
 
             // 4. 主库合法性验证，且必须以master_开头
-            if (!newDataSourceNames.contains(primary)) {
-                return "主库配置不合法，新数据源列表中不存在";
+            if (!newDataSourceNames.contains(primary) && !oldDataSourceNames.contains(primary)) {
+                return "主库配置不合法，新数据源列表中不存在，且旧数据源列表中也不存在";
             }
 
             if (!primary.startsWith("master_")) {
@@ -123,9 +120,17 @@ public class DataSourceDynamicController {
             ds.setPrimary(primary);
 
             // step3 再删除旧库所有数据源
-            deleteDataSourceNames.forEach(ds::removeDataSource);
+            if (CollectionUtils.isEmpty(deleteDataSourceNames)) {
+                deleteDataSourceNames.forEach(ds::removeDataSource);
+            }
 
             list = this.list();
+            OneClickDeploymentResultDto result = new OneClickDeploymentResultDto();
+            result.setDataSources(list);
+            Field primaryField = ReflectionUtils.findField(this.dataSource.getClass(), "primary");
+            primaryField.setAccessible(true);
+            Object field = ReflectionUtils.getField(primaryField, this.dataSource);
+            result.setPrimary(field);
             return list;
         } catch (Exception e) {
             return e.getMessage();
