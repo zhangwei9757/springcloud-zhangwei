@@ -6,8 +6,10 @@ import com.baomidou.dynamic.datasource.DynamicRoutingDataSource;
 import com.baomidou.dynamic.datasource.creator.DataSourceCreator;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DataSourceProperty;
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceProperties;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.microservice.bean.DataSourceProperties;
+import com.microservice.bean.OneClickDeployment;
 import com.microservice.dto.DruidDataSourceDto;
 import io.swagger.annotations.ApiOperation;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +46,91 @@ public class DataSourceDynamicController {
 
     @Resource
     private ApplicationContext applicationContext;
+
+    @PostMapping(value = "/oneClickDeployment")
+    @ApiOperation("一键布署数据源")
+    public Object oneClickDeployment(@Validated @RequestBody OneClickDeployment oneClickDeployment) {
+        try {
+            if (Objects.isNull(oneClickDeployment)) {
+                return "参数不合法";
+            }
+            List<DataSourceProperties> dataSources = oneClickDeployment.getDataSources();
+            String primary = oneClickDeployment.getPrimary();
+            List<String> deleteDataSourceNames = oneClickDeployment.getDeleteDataSourceNames();
+
+            if (Strings.isNullOrEmpty(primary)) {
+                return "新主库名不能为空";
+            }
+
+            if (CollectionUtils.isEmpty(dataSources)) {
+                return "新数据源列表不能为空";
+            }
+
+            if (CollectionUtils.isEmpty(deleteDataSourceNames)) {
+                return "待删除旧数据源名不能为空";
+            }
+
+            List<DruidDataSourceDto> list = this.list();
+            Set<String> oldDataSourceNames = list.stream().map(DruidDataSourceDto::getDataSourceName).collect(Collectors.toSet());
+            Set<String> newDataSourceNames = dataSources.stream().map(DataSourceProperties::getPoolName).collect(Collectors.toSet());
+
+            // 1. 新数据源名只要在旧数据源列表中有重复的就不行
+            Set<String> existsDataSourceNames = oldDataSourceNames.stream().filter(newDataSourceNames::contains).collect(Collectors.toSet());
+            if (!CollectionUtils.isEmpty(existsDataSourceNames)) {
+                return "新数据源中的名称与旧数据源名称存在冲突, 冲突名: " + existsDataSourceNames;
+            }
+
+            // 2. 要删除的数据名只要有一个与真实旧数据源列表不一致就不行
+            long realExistsCount = deleteDataSourceNames.stream().filter(oldDataSourceNames::contains).count();
+            if (realExistsCount != deleteDataSourceNames.size()) {
+                return "待删除旧数据源名与真实存在的旧数据源名称不一致，真实数据源名: " + oldDataSourceNames;
+            }
+            // 3. 新数据源至少存在一主一从，且数据源必须为 master_x 各 slave_x
+            Set<DataSourceProperties> masterDataSources = dataSources.stream().filter(f -> f.getPoolName().startsWith("master_")).collect(Collectors.toSet());
+            Set<DataSourceProperties> slaveDataSources = dataSources.stream().filter(f -> f.getPoolName().startsWith("slave_")).collect(Collectors.toSet());
+            if (CollectionUtils.isEmpty(masterDataSources)) {
+                return "新数据源列表中主库配置数量为: 0";
+            }
+            if (CollectionUtils.isEmpty(slaveDataSources)) {
+                return "新数据源列表中从库配置数量为: 0";
+            }
+
+            // 4. 主库合法性验证，且必须以master_开头
+            if (!newDataSourceNames.contains(primary)) {
+                return "主库配置不合法，新数据源列表中不存在";
+            }
+
+            if (!primary.startsWith("master_")) {
+                return "主库配置不合法，必须以master_开头";
+            }
+
+            DynamicRoutingDataSource ds = (DynamicRoutingDataSource) dataSource;
+            // step1 先添加新数据源
+            dataSources.forEach(f -> {
+                try {
+                    DataSourceProperty dataSourceProperty = new DataSourceProperty();
+                    BeanUtils.copyProperties(f, dataSourceProperty);
+
+
+                    DataSource dataSource = dataSourceCreator.createDataSource(dataSourceProperty);
+                    ds.addDataSource(f.getPoolName(), dataSource);
+                } catch (Exception e) {
+                    log.error(">>> 新数据源: {}, 添加时出现异常, 原因: {}", f.getPoolName(), e.getMessage(), e);
+                    throw new RuntimeException(String.format("新数据源: %s, 添加时出现异常, 原因: %s", f.getPoolName(), e.getMessage()));
+                }
+            });
+            // step2 再重置主库配置
+            ds.setPrimary(primary);
+
+            // step3 再删除旧库所有数据源
+            deleteDataSourceNames.forEach(ds::removeDataSource);
+
+            list = this.list();
+            return list;
+        } catch (Exception e) {
+            return e.getMessage();
+        }
+    }
 
     @PostMapping(value = "/add")
     @ApiOperation("动态添加数据源")
