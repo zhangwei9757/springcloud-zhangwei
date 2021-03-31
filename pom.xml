@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.microservice</groupId>
     <artifactId>springcloud-zhangwei</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>springcloud-zhangwei</name>
     <description>Demo project for Spring Boot</description>
     <packaging>pom</packaging>
@@ -43,6 +43,9 @@
         <module>baidu-ocr</module>
 
         <module>sentinel-zhangwei</module>
+        <module>package-server</module>
+        <module>activemq-provider</module>
+        <module>activemq-consumers</module>
     </modules>
 
     <dependencyManagement>

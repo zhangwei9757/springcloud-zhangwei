@@ -1,0 +1,117 @@
+spring:
+  profiles:
+    active: dev
+
+---
+server:
+  port: 8999
+spring:
+  profiles: dev
+#  cloud:
+#    consul:
+#      host: 127.0.0.1
+#      port: 8500
+#      discovery:
+#        enabled: true
+#        #        hostname: 10.29.23.178
+#        #        instance-id: ${spring.application.name}:${spring.cloud.consul.discovery.hostname}:${server.port}
+#        prefer-ip-address: true
+#        instance-id: ${spring.application.name}:${spring.cloud.client.ip-address}:${server.port}
+#        service-name: ${spring.application.name}
+#        health-check-path: /actuator/health
+#        #        port: ${server.port} #${SERVER_PORT:${server.port}}
+#        healthCheckInterval: 15s
+#        health-check-critical-timeout: 60s
+#        tags: uat
+#        heartbeat:
+#          enabled: true
+  application:
+    name: package-server
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://localhost:3306/jenkins-package?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=false&serverTimezone=UTC
+    driver-class-name: com.mysql.jdbc.Driver
+    username: root
+    password: jzbr
+    platform: mysql
+    druid:
+      initial-size: 5
+      min-idle: 5
+      max-active: 10
+      max-wait: 60000
+      time-between-eviction-runs-millis: 60000
+      min-evictable-idle-time-millis: 300000
+      # SELECT 1 FROM DUAL
+      validationQuery: select 'x'
+      test-while-idle: true
+      test-on-borrow: false
+      test-on-return: false
+      filters: config,wall,stat
+      poolPreparedStatements: true
+      maxPoolPreparedStatementPerConnectionSize: 20
+      maxOpenPreparedStatements: 20
+      # 'druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000'
+      connectionProperties: druid.stat.slowSqlMillis=200;druid.stat.logSlowSql=true;config.decrypt=false
+      # 合并多个DruidDataSource的监控数据
+      #use-global-data-source-stat: true
+      web-stat-filter:
+        enabled: true
+        url-pattern: /*
+        exclusions: /druid/*,*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico
+        session-stat-enable: true
+        session-stat-max-count: 10
+      stat-view-servlet:
+        enabled: true
+        url-pattern: /druid/*
+        reset-enable: true
+        login-username: admin
+        login-password: admin
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 3000ms
+    jedis:
+      pool:
+        max-active: 8 #最大连接数据库连接数,设 0 为没有限制
+        max-idle: 8  #最大等待连接中的数量,设 0 为没有限制
+        max-wait: -1ms  #最大建立连接等待时间。如果超过此时间将接到异常。设为-1表示无限制。
+        min-idle: 0 #最小等待连接中的数量,设 0 为没有限制
+    lettuce:
+      pool:
+        max-active: 8
+        max-idle: 8
+        max-wait: -1ms
+        min-idle: 0
+      shutdown-timeout: 1000ms
+
+management:
+  health:
+    db:
+      enabled: false
+    mail:
+      enabled: false
+    redis:
+      enabled: false
+    rabbit:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*" #暴露所有节点 "bus-refresh"
+      health:
+        senysssitive: false #关闭过滤敏感信息
+  endpoint:
+    health:
+      show-details: ALWAYS  #显示详细信息
+    shutdown:
+      enabled: true
+
+
+mybatis-plus:
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    default-fetch-size: 512
+  mapper-locations: classpath:/mapper/*Mapper.xml
+  type-aliases-package: com.microservice.entity
+  check-config-location: true
