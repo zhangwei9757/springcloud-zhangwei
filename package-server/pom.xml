@@ -23,26 +23,26 @@
     </properties>
 
     <!--============== 配置nexus私服START =============== -->
-    <repositories>
-        <repository>
-            <id>maven-central</id>
-            <name>maven-central</name>
-            <!--仓库地址-->
-            <url>http://127.0.0.1:8081/repository/maven-central/</url>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-            <releases>
-                <enabled>true</enabled>
-            </releases>
-        </repository>
-    </repositories>
+<!--    <repositories>-->
+<!--        <repository>-->
+<!--            <id>maven-central</id>-->
+<!--            <name>maven-central</name>-->
+<!--            &lt;!&ndash;仓库地址&ndash;&gt;-->
+<!--            <url>http://192.168.40.143:8282/repository/maven-central/</url>-->
+<!--            <snapshots>-->
+<!--                <enabled>true</enabled>-->
+<!--            </snapshots>-->
+<!--            <releases>-->
+<!--                <enabled>true</enabled>-->
+<!--            </releases>-->
+<!--        </repository>-->
+<!--    </repositories>-->
 
     <pluginRepositories>
         <pluginRepository>
             <!--插件地址-->
             <id>nexus</id>
-            <url>http://127.0.0.1:8081/repository/maven-public/</url>
+            <url>http://192.168.40.143:8282/repository/maven-public/</url>
         </pluginRepository>
     </pluginRepositories>
 
@@ -50,12 +50,12 @@
         <snapshotRepository>
             <id>snapshots</id>
             <name>snapshot</name>
-            <url>http://127.0.0.1:8081/repository/maven-snapshots/</url>
+            <url>http://192.168.40.143:8282/repository/maven-snapshots/</url>
         </snapshotRepository>
         <repository>
             <id>releases</id>
             <name>release</name>
-            <url>http://127.0.0.1:8081/repository/maven-releases/</url>
+            <url>http://192.168.40.143:8282/repository/maven-releases/</url>
         </repository>
     </distributionManagement>
     <!--    <distributionManagement>-->
@@ -78,6 +78,12 @@
     <!--============== 配置私服End =============== -->
 
     <dependencies>
+<!--        <dependency>-->
+<!--            <groupId>test.zhangwei</groupId>-->
+<!--            <artifactId>testzhangwei</artifactId>-->
+<!--            <version>1.0.1</version>-->
+<!--        </dependency>-->
+
         <!-- https://mvnrepository.com/artifact/com.offbytwo.jenkins/jenkins-client -->
         <dependency>
             <groupId>com.offbytwo.jenkins</groupId>
