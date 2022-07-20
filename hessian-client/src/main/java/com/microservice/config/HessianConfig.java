@@ -2,8 +2,10 @@ package com.microservice.config;
 
 import com.caucho.hessian.client.HessianProxyFactory;
 import com.microservice.hessian.AccountHessian;
+import org.apache.catalina.filters.RequestDumperFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.remoting.caucho.HessianProxyFactoryBean;
 
 import java.net.MalformedURLException;
@@ -15,6 +17,12 @@ import java.net.MalformedURLException;
  */
 @Configuration
 public class HessianConfig {
+
+    @Bean
+    @Profile("prod")
+    public RequestDumperFilter requestDumperFilter() {
+        return new RequestDumperFilter();
+    }
 
     @Bean
     public HessianProxyFactoryBean hessianProxyFactoryBean() {

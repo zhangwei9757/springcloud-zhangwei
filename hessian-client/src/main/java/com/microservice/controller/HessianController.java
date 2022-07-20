@@ -1,13 +1,12 @@
 package com.microservice.controller;
 
 import com.microservice.beans.Account;
+import com.microservice.beans.JsonResult;
 import com.microservice.config.HessianConfig;
 import com.microservice.hessian.AccountHessian;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -31,5 +30,10 @@ public class HessianController {
             AccountHessian accountHessian = HessianConfig.getHessianClientBean(AccountHessian.class, "http://localhost:9999/hessian");
             return accountHessian.getAccountByAccountName(account);
         }
+    }
+
+    @RequestMapping("/test")
+    public JsonResult test(@RequestParam(value = "test") String test) {
+        return JsonResult.success(test);
     }
 }
