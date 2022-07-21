@@ -1,15 +1,15 @@
 package com.microservice.config;
 
+import com.microservice.oauth2.Oauth2ClientCredentialsTokenEndpointFilter;
+import com.microservice.oauth2.Oauth2WebResponseExceptionTranslator;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.StringHttpMessageConverter;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
@@ -28,11 +28,11 @@ import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.client.RestTemplate;
 
 import javax.sql.DataSource;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 
@@ -42,46 +42,48 @@ import java.util.List;
  **/
 @EnableAuthorizationServer
 @Configuration
+@Slf4j
 public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
 
     private final static String SECRET = "secret";
-
     /**
      * 令牌策略
      */
     @Autowired
     private TokenStore tokenStore;
-
     /**
      * 客户端详情服务
      */
     @Autowired
     private ClientDetailsService clientDetailsService;
-
     /**
      * 认证管理器 , 密码模式需要
      */
     @Autowired
     private AuthenticationManager authenticationManager;
-
     /**
      * 授权码模式, 需要
      */
     @Autowired
     private AuthorizationCodeServices authorizationCodeServices;
-
     /**
      * 密码处理器
      */
     @Autowired
     private PasswordEncoder passwordEncoder;
-
+    /**
+     * 授权处理器
+     */
     @Autowired
     private ApprovalStore approvalStore;
 
-    @Autowired
-    private UserDetailsService userDetailsService;
 
+    @Bean
+    public AuthenticationEntryPoint authenticationEntryPoint() {
+        return (request, response, exception) -> {
+            log.error(">>>>>> 匿名认证失败, {}", exception.getMessage(), exception);
+        };
+    }
 
     @Override
     public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
@@ -121,6 +123,8 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
                 .authorizationCodeServices(authorizationCodeServices)
                 // 令牌管理器
                 .tokenServices(tokenServices())
+                // 自定义响应解释器，错误自定义控制
+                .exceptionTranslator(new Oauth2WebResponseExceptionTranslator())
                 // 允许post 请求令牌
                 .allowedTokenEndpointRequestMethods(HttpMethod.POST);
 
@@ -138,11 +142,21 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
 
     @Override
     public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
+        Oauth2ClientCredentialsTokenEndpointFilter endpointFilter = new Oauth2ClientCredentialsTokenEndpointFilter(security);
+        endpointFilter.afterPropertiesSet();
+        endpointFilter.setAuthenticationEntryPoint(authenticationEntryPoint());
+        security.addTokenEndpointAuthenticationFilter(endpointFilter);
+
+
         security
                 .passwordEncoder(passwordEncoder)
+                .authenticationEntryPoint(authenticationEntryPoint())
+                // permitAll()
                 .tokenKeyAccess("isAuthenticated()")
                 .checkTokenAccess("isAuthenticated()")
-                .allowFormAuthenticationForClients();
+        // 此时使用了自定义拦截过滤生写异常自定义响应实体JSON,需要关闭表单认证
+        //.allowFormAuthenticationForClients()
+        ;
     }
 
     /**
