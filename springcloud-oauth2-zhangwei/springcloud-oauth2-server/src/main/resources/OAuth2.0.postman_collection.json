@@ -1,0 +1,288 @@
+{
+	"info": {
+		"_postman_id": "6226c615-d75f-444a-807d-eaa420206b22",
+		"name": "OAuth2.0",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "授权码方式",
+			"item": [
+				{
+					"name": "授权码获取",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8766/oauth/authorize?client_id=test_1&response_type=code&scope=all&redirect_uri=http://www.baidu.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8766",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "test_1"
+								},
+								{
+									"key": "response_type",
+									"value": "code"
+								},
+								{
+									"key": "scope",
+									"value": "all"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://www.baidu.com"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "使用授权码获取Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8766/oauth/token?client_id=test_1&client_secret=123456&grant_type=authorization_code&code=jTc2oY&redirect_uri=http://www.baidu.com",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8766",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "test_1"
+								},
+								{
+									"key": "client_secret",
+									"value": "123456"
+								},
+								{
+									"key": "grant_type",
+									"value": "authorization_code"
+								},
+								{
+									"key": "code",
+									"value": "jTc2oY"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://www.baidu.com"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "密码模式",
+			"item": [
+				{
+					"name": "通过密码获取Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8766/oauth/token?client_id=test_1&client_secret=123456&grant_type=password&redirect_uri=http://www.baidu.com&username=test_11&password=123456",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8766",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "test_1"
+								},
+								{
+									"key": "client_secret",
+									"value": "123456"
+								},
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "redirect_uri",
+									"value": "http://www.baidu.com"
+								},
+								{
+									"key": "username",
+									"value": "test_11"
+								},
+								{
+									"key": "password",
+									"value": "123456"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "客户端模式",
+			"item": [
+				{
+					"name": "客户端获取Token",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8766/oauth/token?client_id=test_1&client_secret=123456&grant_type=client_credentials",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8766",
+							"path": [
+								"oauth",
+								"token"
+							],
+							"query": [
+								{
+									"key": "client_id",
+									"value": "test_1"
+								},
+								{
+									"key": "client_secret",
+									"value": "123456"
+								},
+								{
+									"key": "grant_type",
+									"value": "client_credentials"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "授权码简化模式",
+			"item": [
+				{
+					"name": "使用授权码简化模式获取Token",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "",
+								"value": "",
+								"type": "default",
+								"disabled": true
+							}
+						],
+						"url": {
+							"raw": "http://localhost:8766/oauth/authorize?redirect_uri=http://www.baidu.com&client_id=test_1&response_type=token&scope=all",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8766",
+							"path": [
+								"oauth",
+								"authorize"
+							],
+							"query": [
+								{
+									"key": "redirect_uri",
+									"value": "http://www.baidu.com"
+								},
+								{
+									"key": "client_id",
+									"value": "test_1"
+								},
+								{
+									"key": "response_type",
+									"value": "token"
+								},
+								{
+									"key": "scope",
+									"value": "all"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "OAuth2.0 资源访问测试",
+			"item": [
+				{
+					"name": "New Request",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": {
+								"token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsicmVzb3VyY2VfMSJdLCJ1c2VyX25hbWUiOiJ0ZXN0XzExIiwic2NvcGUiOlsiYWxsIl0sImV4cCI6MTY1ODUxMjI4NiwiYXV0aG9yaXRpZXMiOlsiUk9MRV9VU0VSIl0sImp0aSI6IjY4ZGMzZTAwLTYzZDItNDllZS04NjJhLWU2M2NhMDE2NmM1ZiIsImNsaWVudF9pZCI6InRlc3RfMSJ9.JACR0AGVxgwsHwm4I6MArzvGI3fux1amhamz7-4Igqo"
+							}
+						},
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "default"
+							}
+						],
+						"url": "http://localhost:8767/info"
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
