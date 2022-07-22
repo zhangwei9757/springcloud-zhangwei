@@ -1,8 +1,13 @@
 package com.microservice.config;
 
+import com.microservice.beans.JsonResult;
+import com.microservice.utils.JsonUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
@@ -11,8 +16,12 @@ import org.springframework.security.oauth2.config.annotation.web.configurers.Res
 import org.springframework.security.oauth2.provider.token.RemoteTokenServices;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenStore;
+import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
-import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
+
+import javax.annotation.Resource;
+import javax.sql.DataSource;
+import java.util.Objects;
 
 /**
  * @author zhangwei
@@ -20,13 +29,21 @@ import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
  **/
 @Configuration
 @EnableResourceServer
+@Slf4j
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     private static final String SIGNING_KEY = "secret";
-    private static final String RESOURCE_ID = "zhangwei";
+    private static final String RESOURCE_ID = "resource_1";
 
-    @Autowired
+    @Resource
     private TokenStore tokenStore;
+
+    @Bean
+    public TokenStore tokenStore(DataSource dataSource) {
+        // return new InMemoryTokenStore();
+//        return new JwtTokenStore(accessTokenConverter());
+        return new JdbcTokenStore(dataSource);
+    }
 
     @Override
     public void configure(ResourceServerSecurityConfigurer resources) {
@@ -35,25 +52,45 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .resourceId(RESOURCE_ID)
                 .tokenStore(tokenStore)
 //                .tokenStore(new JwtTokenStore(accessTokenConverter()))
-//                .tokenServices(tokenServices())
+                .tokenServices(tokenServices())
+                .accessDeniedHandler((request, response, e) -> {
+                    log.error(">>>>>> 资源服务器认证失败, {}", e.getMessage(), e);
+
+                    JsonResult<String> result = new JsonResult<>();
+                    result.setFlag(false);
+                    result.setCode(HttpStatus.FORBIDDEN.value());
+                    result.setError(e.getMessage());
+
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.getWriter()
+                            .write(Objects.requireNonNull(JsonUtils.toJson(result)));
+                })
+                .authenticationEntryPoint((request, response, e) -> {
+                    log.error(">>>>>> 资源服务器匿名认证失败, {}", e.getMessage(), e);
+
+                    JsonResult<String> result = new JsonResult<>();
+                    result.setFlag(false);
+                    result.setCode(HttpStatus.UNAUTHORIZED.value());
+                    result.setError(e.getMessage());
+
+                    response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+                    response.getWriter()
+                            .write(Objects.requireNonNull(JsonUtils.toJson(result)));
+                })
                 .stateless(true);
     }
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
+                .requestMatchers()
+                .antMatchers("/**")
+                .and()
                 .authorizeRequests()
                 .anyRequest()
                 .authenticated()
-//                .antMatchers("/**").access("#oauth2.hasScope('all')")
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-    }
-
-    @Bean
-    public TokenStore tokenStore() {
-        // return new InMemoryTokenStore();
-        return new JwtTokenStore(accessTokenConverter());
     }
 
     @Bean
@@ -67,7 +104,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     public ResourceServerTokenServices tokenServices() {
         RemoteTokenServices services = new RemoteTokenServices();
         services.setCheckTokenEndpointUrl("http://localhost:8766/oauth/check_token");
-        services.setClientId("admin");
+        services.setClientId("test_1");
         services.setClientSecret("123456");
         return services;
     }

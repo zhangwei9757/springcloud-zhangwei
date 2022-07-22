@@ -1,5 +1,6 @@
 package com.microservice.service;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Service;
  * @date 2020-6-19 20:42:1
  **/
 @Service
+@Slf4j
 public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Autowired
@@ -21,6 +23,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
+        log.info(">>>>>> 用户开始校验密码: {}", s);
         return new User(s, passwordEncoder.encode("123456"),
                 AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
     }

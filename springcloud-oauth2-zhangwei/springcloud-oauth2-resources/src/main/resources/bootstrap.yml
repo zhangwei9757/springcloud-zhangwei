@@ -1,0 +1,20 @@
+server:
+  port: 8767
+
+spring:
+  profiles:
+    active: @profile.active@
+  application:
+    name: resource-server
+  main:
+    allow-bean-definition-overriding: true
+#  cloud:
+#    nacos:
+#      config:
+#        refresh-enabled: true
+#        server-addr: @profile.nacosAddress@
+#        file-extension: yaml #格式： ${spring.application.name}-${spring.profiles.active}.${file-extension}
+#      discovery:
+#        server-addr: @profile.nacosAddress@
+#        heart-beat-interval: 10 #30S发送一次心跳
+#        heart-beat-timeout: 60 #90S 如果没发送心跳成功，就自动下线

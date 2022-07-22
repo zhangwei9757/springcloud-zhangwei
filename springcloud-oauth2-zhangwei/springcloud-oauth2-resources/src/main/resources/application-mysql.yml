@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: authorization-server
+  redis:
+    host: localhost
+    port: 6379
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.jdbc.Driver
+    filters: stat,wall
+    druid:
+      url: jdbc:mysql://localhost:3306/oauth2?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=Asia/Shanghai
+      username: root
+      password: jzbr
+      initialSize: 5
+      minIdle: 5
+      maxActive: 20
+      maxWait: 60000
+      timeBetweenEvictionRunsMillis: 60000
+      minEvictableIdleTimeMillis: 300000
+      validationQuery: SELECT 1 FROM DUAL
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      poolPreparedStatements: false
+      maxPoolPreparedStatementPerConnectionSize: 20
+      connectionProperties: 'druid.stat.mergeSql=true;druid.stat.slowSqlMillis=5000'
+  main:
+    allow-bean-definition-overriding: true
+
+server:
+  port: 8766
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

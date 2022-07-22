@@ -2,6 +2,7 @@ package com.microservice.config;
 
 import com.microservice.oauth2.Oauth2ClientCredentialsTokenEndpointFilter;
 import com.microservice.oauth2.Oauth2WebResponseExceptionTranslator;
+import com.microservice.service.UserDetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -43,7 +44,7 @@ import java.util.List;
 @EnableAuthorizationServer
 @Configuration
 @Slf4j
-public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdapter {
+public class AuthorizationServerConfiguration extends AuthorizationServerConfigurerAdapter {
 
     private final static String SECRET = "secret";
     /**
@@ -57,10 +58,15 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     @Autowired
     private ClientDetailsService clientDetailsService;
     /**
-     * 认证管理器 , 密码模式需要
+     * 认证管理器, 密码模式需要
      */
     @Autowired
     private AuthenticationManager authenticationManager;
+    /**
+     * 密码认证使用
+     */
+    @Autowired
+    private UserDetailsServiceImpl userDetailsService;
     /**
      * 授权码模式, 需要
      */
@@ -78,11 +84,82 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     private ApprovalStore approvalStore;
 
 
+    /**
+     * 匿名认证处理器
+     *
+     * @return
+     */
     @Bean
     public AuthenticationEntryPoint authenticationEntryPoint() {
         return (request, response, exception) -> {
             log.error(">>>>>> 匿名认证失败, {}", exception.getMessage(), exception);
         };
+    }
+
+    /**
+     * 令牌管理服务
+     *
+     * @return
+     */
+    @Bean
+    public AuthorizationServerTokenServices tokenServices() {
+        DefaultTokenServices service = new DefaultTokenServices();
+        // 客户端详情 服务
+        service.setClientDetailsService(clientDetailsService);
+        // 是否刷新令牌
+        service.setSupportRefreshToken(true);
+        // 令牌策略
+        service.setTokenStore(tokenStore);
+        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
+        tokenEnhancerChain.setTokenEnhancers(Collections.singletonList(accessTokenConverter()));
+        service.setTokenEnhancer(tokenEnhancerChain);
+        // 令牌有效期
+        service.setAccessTokenValiditySeconds(7200);
+        // 刷新令牌时间
+        service.setRefreshTokenValiditySeconds(259200);
+        return service;
+    }
+
+    @Bean
+    public TokenStore tokenStore(DataSource dataSource) {
+        // return new InMemoryTokenStore();
+        // return redisTokenStore;
+        return new JdbcTokenStore(dataSource);
+    }
+
+    @Bean
+    public ClientDetailsService clientDetailsService(DataSource dataSource) {
+        return new JdbcClientDetailsService(dataSource);
+    }
+
+    @Bean
+    public JwtAccessTokenConverter accessTokenConverter() {
+        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
+        converter.setSigningKey(SECRET);
+        return converter;
+    }
+
+    @Bean
+    public AuthorizationCodeServices authorizationCodeServices(DataSource dataSource) {
+        // 设置授权码模式的授权码如何存取
+        // return new InMemoryAuthorizationCodeServices();
+        return new JdbcAuthorizationCodeServices(dataSource);
+    }
+
+    @Bean
+    public ApprovalStore approvalStore(DataSource dataSource) {
+        return new JdbcApprovalStore(dataSource);
+    }
+
+    private static RestTemplate getInstance(String charset, RestTemplate restTemplate) {
+        List<HttpMessageConverter<?>> list = restTemplate.getMessageConverters();
+        for (HttpMessageConverter<?> httpMessageConverter : list) {
+            if (httpMessageConverter instanceof StringHttpMessageConverter) {
+                ((StringHttpMessageConverter) httpMessageConverter).setDefaultCharset(Charset.forName(charset));
+                break;
+            }
+        }
+        return restTemplate;
     }
 
     @Override
@@ -116,7 +193,6 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
                 .approvalStore(approvalStore)
-                // .userDetailsService(userDetailsService)
                 // 认证管理器
                 .authenticationManager(authenticationManager)
                 // 授权码管理器
@@ -147,81 +223,14 @@ public class AuthorizationServerConfig extends AuthorizationServerConfigurerAdap
         endpointFilter.setAuthenticationEntryPoint(authenticationEntryPoint());
         security.addTokenEndpointAuthenticationFilter(endpointFilter);
 
-
         security
                 .passwordEncoder(passwordEncoder)
                 .authenticationEntryPoint(authenticationEntryPoint())
                 // permitAll()
-                .tokenKeyAccess("isAuthenticated()")
-                .checkTokenAccess("isAuthenticated()")
+                .tokenKeyAccess("permitAll()")
+                .checkTokenAccess("permitAll()")
         // 此时使用了自定义拦截过滤生写异常自定义响应实体JSON,需要关闭表单认证
         //.allowFormAuthenticationForClients()
         ;
-    }
-
-    /**
-     * 令牌管理服务
-     *
-     * @return
-     */
-    @Bean
-    public AuthorizationServerTokenServices tokenServices() {
-        DefaultTokenServices service = new DefaultTokenServices();
-        // 客户端详情 服务
-        service.setClientDetailsService(clientDetailsService);
-        // 是否刷新令牌
-        service.setSupportRefreshToken(true);
-        // 令牌策略
-        service.setTokenStore(tokenStore);
-        TokenEnhancerChain tokenEnhancerChain = new TokenEnhancerChain();
-        tokenEnhancerChain.setTokenEnhancers(Collections.singletonList(accessTokenConverter()));
-        service.setTokenEnhancer(tokenEnhancerChain);
-        // 令牌有效期
-        service.setAccessTokenValiditySeconds(7200);
-        // 刷新令牌时间
-        service.setRefreshTokenValiditySeconds(259200);
-        return service;
-    }
-
-    @Bean
-    public TokenStore tokenStore(DataSource dataSource) {
-        return new JdbcTokenStore(dataSource);
-//        return new InMemoryTokenStore();
-//        return redisTokenStore;
-    }
-
-    @Bean
-    public ClientDetailsService clientDetailsService(DataSource dataSource) {
-        return new JdbcClientDetailsService(dataSource);
-    }
-
-    @Bean
-    public JwtAccessTokenConverter accessTokenConverter() {
-        JwtAccessTokenConverter converter = new JwtAccessTokenConverter();
-        converter.setSigningKey(SECRET);
-        return converter;
-    }
-
-    @Bean
-    public AuthorizationCodeServices authorizationCodeServices(DataSource dataSource) {
-        //设置授权码模式的授权码如何存取
-        return new JdbcAuthorizationCodeServices(dataSource);
-//        return new InMemoryAuthorizationCodeServices();
-    }
-
-    @Bean
-    public ApprovalStore approvalStore(DataSource dataSource) {
-        return new JdbcApprovalStore(dataSource);
-    }
-
-    private static RestTemplate getInstance(String charset, RestTemplate restTemplate) {
-        List<HttpMessageConverter<?>> list = restTemplate.getMessageConverters();
-        for (HttpMessageConverter<?> httpMessageConverter : list) {
-            if (httpMessageConverter instanceof StringHttpMessageConverter) {
-                ((StringHttpMessageConverter) httpMessageConverter).setDefaultCharset(Charset.forName(charset));
-                break;
-            }
-        }
-        return restTemplate;
     }
 }

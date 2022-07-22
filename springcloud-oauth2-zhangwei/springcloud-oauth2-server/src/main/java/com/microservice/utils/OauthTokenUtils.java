@@ -1,6 +1,7 @@
 package com.microservice.utils;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.provider.authentication.BearerTokenExtractor;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
 
@@ -37,5 +38,9 @@ public class OauthTokenUtils {
         Authentication authentication = analysisAuthorization(request);
         String token = (String) authentication.getPrincipal();
         return tokenServices.loadAuthentication(token);
+    }
+
+    public static void main(String[] args) {
+        System.out.println(new BCryptPasswordEncoder().encode("123456"));
     }
 }
