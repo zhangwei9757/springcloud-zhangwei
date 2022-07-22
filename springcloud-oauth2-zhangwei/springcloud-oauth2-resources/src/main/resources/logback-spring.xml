@@ -13,7 +13,7 @@
     <!-- 定义日志的根目录 -->
     <property name="LOG_HOME" value="logs"/>
     <!-- 定义日志文件名称 -->
-    <property name="appName" value="oauth2AuthServer"/>
+    <property name="appName" value="oauth2ResourceServer"/>
 
     <property name="smtpHost" value="smtp.qq.com"/>
     <property name="to" value="ss@ss.cn"/>
