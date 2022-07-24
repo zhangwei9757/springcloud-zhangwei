@@ -3,7 +3,6 @@ package com.microservice.config;
 import com.microservice.beans.JsonResult;
 import com.microservice.utils.JsonUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
@@ -18,6 +17,7 @@ import org.springframework.security.oauth2.provider.token.ResourceServerTokenSer
 import org.springframework.security.oauth2.provider.token.TokenStore;
 import org.springframework.security.oauth2.provider.token.store.JdbcTokenStore;
 import org.springframework.security.oauth2.provider.token.store.JwtAccessTokenConverter;
+import org.springframework.security.oauth2.provider.token.store.JwtTokenStore;
 
 import javax.annotation.Resource;
 import javax.sql.DataSource;
@@ -33,7 +33,7 @@ import java.util.Objects;
 public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
 
     private static final String SIGNING_KEY = "secret";
-    private static final String RESOURCE_ID = "resource_1";
+    private static final String RESOURCE_ID = "zhangwei";
 
     @Resource
     private TokenStore tokenStore;
@@ -41,8 +41,8 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
     @Bean
     public TokenStore tokenStore(DataSource dataSource) {
         // return new InMemoryTokenStore();
-//        return new JwtTokenStore(accessTokenConverter());
-        return new JdbcTokenStore(dataSource);
+        return new JwtTokenStore(accessTokenConverter());
+//        return new JdbcTokenStore(dataSource);
     }
 
     @Override
@@ -108,6 +108,12 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
         services.setClientSecret("123456");
         return services;
     }
+
+
+//    @Bean
+//    public ResourceServerTokenServices tokenServices() {
+//        return new UserInfoTokenServices("http://localhost:8766/oauth/check_token", "test_1");
+//    }
 
 
 //    @Bean

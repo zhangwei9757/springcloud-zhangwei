@@ -1,4 +1,4 @@
-package com.microservice.annotation.annotations;
+package com.microservice.annotations;
 
 import com.baomidou.dynamic.datasource.spring.boot.autoconfigure.DynamicDataSourceAutoConfiguration;
 import com.baomidou.mybatisplus.autoconfigure.MybatisPlusAutoConfiguration;

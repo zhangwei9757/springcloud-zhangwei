@@ -2,6 +2,7 @@ package com.microservice.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,14 +17,15 @@ import org.springframework.stereotype.Service;
  **/
 @Service
 @Slf4j
-public class UserDetailsServiceImpl implements UserDetailsService {
+@Primary
+public class Oauth2DetailsServiceImpl implements UserDetailsService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
-        log.info(">>>>>> 用户开始校验密码: {}", s);
+        log.info(">>>>>> Oauth2 用户开始校验密码: {}", s);
         return new User(s, passwordEncoder.encode("123456"),
                 AuthorityUtils.commaSeparatedStringToAuthorityList("ROLE_USER"));
     }

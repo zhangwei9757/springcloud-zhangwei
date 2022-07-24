@@ -1,5 +1,6 @@
 package com.microservice.controller;
 
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.provider.authentication.BearerTokenExtractor;
 import org.springframework.security.oauth2.provider.token.ResourceServerTokenServices;
@@ -23,6 +24,7 @@ public class ResourceController {
     ResourceServerTokenServices tokenServices;
 
     @GetMapping("/info")
+    @PreAuthorize("#oauth2.hasAnyScope('read')")
     public Object get() {
         return "resource server...";
     }

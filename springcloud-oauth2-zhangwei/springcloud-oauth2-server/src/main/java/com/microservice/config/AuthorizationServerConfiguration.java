@@ -2,7 +2,7 @@ package com.microservice.config;
 
 import com.microservice.oauth2.Oauth2ClientCredentialsTokenEndpointFilter;
 import com.microservice.oauth2.Oauth2WebResponseExceptionTranslator;
-import com.microservice.service.UserDetailsServiceImpl;
+import com.microservice.service.Oauth2DetailsServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,11 +18,11 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerEndpointsConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configurers.AuthorizationServerSecurityConfigurer;
 import org.springframework.security.oauth2.provider.ClientDetailsService;
-import org.springframework.security.oauth2.provider.approval.ApprovalStore;
-import org.springframework.security.oauth2.provider.approval.JdbcApprovalStore;
+import org.springframework.security.oauth2.provider.approval.*;
 import org.springframework.security.oauth2.provider.client.JdbcClientDetailsService;
 import org.springframework.security.oauth2.provider.code.AuthorizationCodeServices;
 import org.springframework.security.oauth2.provider.code.JdbcAuthorizationCodeServices;
+import org.springframework.security.oauth2.provider.request.DefaultOAuth2RequestFactory;
 import org.springframework.security.oauth2.provider.token.AuthorizationServerTokenServices;
 import org.springframework.security.oauth2.provider.token.DefaultTokenServices;
 import org.springframework.security.oauth2.provider.token.TokenEnhancerChain;
@@ -66,7 +66,7 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
      * 密码认证使用
      */
     @Autowired
-    private UserDetailsServiceImpl userDetailsService;
+    private Oauth2DetailsServiceImpl userDetailsService;
     /**
      * 授权码模式, 需要
      */
@@ -78,10 +78,13 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Autowired
     private PasswordEncoder passwordEncoder;
     /**
-     * 授权处理器
+     * 授权信息保存策略
      */
     @Autowired
     private ApprovalStore approvalStore;
+
+    @Autowired
+    private UserApprovalHandler userApprovalHandler;
 
 
     /**
@@ -128,6 +131,22 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     }
 
     @Bean
+    public ApprovalStore approvalStore() {
+        TokenApprovalStore store = new TokenApprovalStore();
+        store.setTokenStore(tokenStore);
+        return store;
+    }
+
+    @Bean
+    public TokenStoreUserApprovalHandler userApprovalHandler(TokenStore tokenStore, ClientDetailsService clientDetailsService) {
+        TokenStoreUserApprovalHandler handler = new TokenStoreUserApprovalHandler();
+        handler.setTokenStore(tokenStore);
+        handler.setRequestFactory(new DefaultOAuth2RequestFactory(clientDetailsService));
+        handler.setClientDetailsService(clientDetailsService);
+        return handler;
+    }
+
+    @Bean
     public ClientDetailsService clientDetailsService(DataSource dataSource) {
         return new JdbcClientDetailsService(dataSource);
     }
@@ -144,11 +163,6 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
         // 设置授权码模式的授权码如何存取
         // return new InMemoryAuthorizationCodeServices();
         return new JdbcAuthorizationCodeServices(dataSource);
-    }
-
-    @Bean
-    public ApprovalStore approvalStore(DataSource dataSource) {
-        return new JdbcApprovalStore(dataSource);
     }
 
     private static RestTemplate getInstance(String charset, RestTemplate restTemplate) {
@@ -192,7 +206,10 @@ public class AuthorizationServerConfiguration extends AuthorizationServerConfigu
     @Override
     public void configure(AuthorizationServerEndpointsConfigurer endpoints) throws Exception {
         endpoints
+                .userDetailsService(userDetailsService)
+                // 授权信息保存策略
                 .approvalStore(approvalStore)
+                .userApprovalHandler(userApprovalHandler)
                 // 认证管理器
                 .authenticationManager(authenticationManager)
                 // 授权码管理器
