@@ -49,8 +49,8 @@
         <module>webflux-zhangwei</module>
 
         <module>core</module>
-        <module>hessian-server</module>
-        <module>hessian-client</module>
+        <module>hessain-server</module>
+        <module>hessain-client</module>
     </modules>
 
     <dependencyManagement>
