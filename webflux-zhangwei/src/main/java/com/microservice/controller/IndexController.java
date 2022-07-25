@@ -1,6 +1,8 @@
 package com.microservice.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import reactor.core.publisher.Mono;
 
 /**
  * @author zw
@@ -10,8 +12,8 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class IndexController {
 
-//    @GetMapping(value = "/index")
-//    public Mono<String> index() {
-//        return Mono.justOrEmpty("index.....");
-//    }
+    @GetMapping(value = "/index")
+    public Mono<String> index() {
+        return Mono.justOrEmpty("index.....");
+    }
 }

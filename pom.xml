@@ -46,6 +46,7 @@
         <module>package-server</module>
         <module>activemq-provider</module>
         <module>activemq-consumers</module>
+        <module>webflux-zhangwei</module>
 
         <module>core</module>
         <module>hessian-server</module>

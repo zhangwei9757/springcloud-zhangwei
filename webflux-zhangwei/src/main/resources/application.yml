@@ -49,5 +49,5 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
     default-fetch-size: 512
   mapper-locations: classpath:/mapper/*Mapper.xml
-  type-aliases-package: com.zhangwei9757.entity
+  type-aliases-package: com.microservice.entity
   check-config-location: true
