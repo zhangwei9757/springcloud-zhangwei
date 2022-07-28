@@ -1,6 +1,0 @@
-jstats -gc PID
-jinfo -flag NewRatio PID
-jinfo -flag SurvivorRatio PID
-jps
-jvisualvm [需要安装插件Visual GC]
-idea 安装插件 jprofiler
